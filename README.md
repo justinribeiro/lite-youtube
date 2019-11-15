@@ -57,4 +57,4 @@ flexibility.
 
  | Name | Description | Default |
  | --- | --- | --- |
- | `videoid` | The YouTube videoid | `guJLfqTFfIw` |
+ | `videoid` | The YouTube videoid | ` ` |
