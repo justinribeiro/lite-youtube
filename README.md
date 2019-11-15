@@ -8,7 +8,7 @@
 
 * No dependencies; it's just a vanilla web component.
 * It's fast yo.
-* It's shadowDom encapsulated!
+* It's Shadow Dom encapsulated!
 * It's responsive (just style it like you normally would with height and width and things)
 
 ## Install
@@ -41,7 +41,7 @@ Finally, use as required:
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.1.0/lite-youtube.js">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.1.1/lite-youtube.js">
 ```
 
 Finally, use as required:
