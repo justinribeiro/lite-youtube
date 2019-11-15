@@ -1,0 +1,22 @@
+{
+  "name": "@justinribeiro/lite-youtube",
+  "description": "A web component that loads YouTube embed iframes faster. ShadowDom based version of Paul Irish' concept.",
+  "author": "Justin Ribeiro <justin@justinribeiro.com>",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:justinribeiro/lite-youtube.git"
+  },
+  "license": "MIT",
+  "version": "0.1.0",
+  "main": "lite-youtube.js",
+  "module": "lite-youtube.js",
+  "keywords": [
+    "web components",
+    "youtube"
+  ],
+  "devDependencies": {
+    "eslint": "^6.6.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-html": "^6.0.0"
+  }
+}
