@@ -14,6 +14,11 @@
  *   https://github.com/vb/lazyframe
  */
 class LiteYTEmbed extends HTMLElement {
+  constructor() {
+    super();
+    this.setupDom();
+  }
+
   static get observedAttributes() {
     return ['videoid'];
   }
@@ -27,8 +32,6 @@ class LiteYTEmbed extends HTMLElement {
     // TODO: In the future we could be like amp-youtube and silently swap in the iframe during idle time
     //   We'd want to only do this for in-viewport or near-viewport ones: https://github.com/ampproject/amphtml/pull/5003
     this.addEventListener('click', e => this.addIframe());
-    this.setupDom();
-    this.setupComponent();
   }
 
   setupDom() {
@@ -156,8 +159,12 @@ class LiteYTEmbed extends HTMLElement {
       case 'videoid': {
         if (oldVal !== newVal) {
           this.setupComponent();
-          this.__domRefFrame.classList.remove('lyt-activated');
-          this.shadowRoot.querySelector('iframe').remove();
+
+          // if we have a previous iframe, remove it and the activated class
+          if (this.__domRefFrame.classList.contains('lyt-activated')) {
+            this.__domRefFrame.classList.remove('lyt-activated');
+            this.shadowRoot.querySelector('iframe').remove();
+          }
         }
         break;
       }
