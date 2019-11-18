@@ -43,7 +43,7 @@ If you want the paste-and-go version, you can simply load it via CDN:
 ## Basic Usage
 
 ```html
-  <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
 ```
 
 ## Add Video Title
