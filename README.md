@@ -9,7 +9,7 @@
 * No dependencies; it's just a vanilla web component.
 * It's fast yo.
 * It's Shadow Dom encapsulated!
-* It's responsive (just style it like you normally would with height and width and things)
+* It's responsive 16:9
 * It's accessible via keyboard and will set ARIA via the `videotitle` attribute
 * It's locale ready; you can set the `videoplay` to have a properly locale based label
 
@@ -62,16 +62,17 @@ If you want the paste-and-go version, you can simply load it via CDN:
 ```
 
 ## Style It
-Add a class or just style it directly. Height and Width are responsive in the container (there is a min-height requirement of 315px to make the basic embed work easier).
+Height and Width are responsive in the component.
 ```html
 <style>
   .styleIt {
     width: 400px;
-    height: 400px;
     margin: auto;
   }
 </style>
-<lite-youtube class="styleIt" videoid="guJLfqTFfIw"></lite-youtube>
+<div class="styleIt">
+  <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+</div>
 ```
 
 ## Attributes
