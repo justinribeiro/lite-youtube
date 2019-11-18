@@ -39,11 +39,9 @@ class LiteYTEmbed extends HTMLElement {
     shadowDom.innerHTML = `
       <style>
         :host {
-          contain: strict;
+          contain: content;
           display: block;
-          position: relative;
-          width: 100%;
-          min-height: 315px;
+          padding-bottom: calc(100% / (16 / 9));
         }
 
         #frame {
@@ -221,7 +219,7 @@ class LiteYTEmbed extends HTMLElement {
     // https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-2---attribute-escape-before-inserting-untrusted-data-into-html-common-attributes
     const escapedVideoId = encodeURIComponent(this.videoId);
     const iframeHTML = `
-<iframe width="560" height="315" frameborder="0"
+<iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
   src="https://www.youtube.com/embed/${escapedVideoId}?autoplay=1"
 ></iframe>`;

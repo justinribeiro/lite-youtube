@@ -22,8 +22,6 @@
       }
       .styleIt {
         width: 400px;
-        height: 400px;
-        margin: auto;
       }
     </style>
   </head>
@@ -54,11 +52,15 @@
     <lite-youtube videoid="guJLfqTFfIw" videoplay="Mirar" videotitle="Mis hijos se burlan de mi español"></lite-youtube>
 
     <h3>Style It</h3>
-    <p>Add a class or just style it directly. Height and Width are responsive in the container (there is a min-height requirement of 315px to make the basic embed work easier).</p>
+    <p>Height and Width are responsive in the component.</p>
     <pre>
 
-&lt;style&gt;&#10;  .styleIt {&#10;    width: 400px;&#10;    height: 400px;&#10;    margin: auto;&#10;  }&#10;&lt;/style&gt;&#10;&lt;lite-youtube class=&quot;styleIt&quot; videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;
+&lt;style&gt;&#10;  .styleIt {&#10;    width: 400px;&#10;    margin: auto;&#10;  }&#10;&lt;/style&gt;
+&lt;div class=&quot;styleIt&quot;&gt;&#10;      &lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;&#10;    &lt;/div&gt;
     </pre>
-    <lite-youtube class="styleIt" videoid="guJLfqTFfIw"></lite-youtube>
+    <div class="styleIt">
+      <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+    </div>
+
   </body>
 </html>
