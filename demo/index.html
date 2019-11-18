@@ -5,19 +5,60 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
     <title>lite-youtube demo</title>
     <script type="module" src="../lite-youtube.js"></script>
+    <style>
+      * {
+        box-sizing: content-box;
+      }
+      body {
+        width: 800px;
+        margin: auto;
+      }
+      pre {
+        width: 100%;
+        padding: 1em;
+        overflow-x: scroll;
+        background-clip: z;
+        background-color: #eee;
+      }
+      .styleIt {
+        width: 400px;
+        height: 400px;
+        margin: auto;
+      }
+    </style>
   </head>
   <body>
     <h3>Basic Usage</h3>
     <pre>
-      &lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;
+
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;
     </pre>
     <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+
+    <h3>Add Video Title</h3>
+    <pre>
+
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; videotitle=&quot;This is a video title&quot;&gt;&lt;/lite-youtube&gt;
+    </pre>
+    <lite-youtube videoid="guJLfqTFfIw" videotitle="This is a video title"></lite-youtube>
+
+    <h3>Change "Play" for Locale</h3>
+    <pre>
+
+&lt;lite-youtube
+   videoid=&quot;guJLfqTFfIw&quot;
+   videoplay=&quot;Mirar&quot;
+   videotitle=&quot;Mis hijos se burlan de mi espa&ntilde;ol&quot;&gt;
+&lt;/lite-youtube&gt;
+    </pre>
+    <lite-youtube videoid="guJLfqTFfIw" videoplay="Mirar" videotitle="Mis hijos se burlan de mi español"></lite-youtube>
 
     <h3>Style It</h3>
     <p>Add a class or just style it directly. Height and Width are responsive in the container (there is a min-height requirement of 315px to make the basic embed work easier).</p>
     <pre>
-      &lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; style=&quot;width: 400px; height: 400px&quot;&gt;&lt;/lite-youtube&gt;
+
+&lt;style&gt;&#10;  .styleIt {&#10;    width: 400px;&#10;    height: 400px;&#10;    margin: auto;&#10;  }&#10;&lt;/style&gt;&#10;&lt;lite-youtube class=&quot;styleIt&quot; videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;
     </pre>
-    <lite-youtube videoid="guJLfqTFfIw" style="width: 400px; height: 400px"></lite-youtube>
+    <lite-youtube class="styleIt" videoid="guJLfqTFfIw"></lite-youtube>
   </body>
 </html>
