@@ -10,6 +10,8 @@
 * It's fast yo.
 * It's Shadow Dom encapsulated!
 * It's responsive (just style it like you normally would with height and width and things)
+* It's accessible via keyboard and will set ARIA via the `videotitle` attribute
+* It's locale ready; you can set the `videoplay` to have a properly locale based label
 
 ## Install
 
@@ -30,24 +32,46 @@ After install, import into your project:
 import '@justinribeiro/lite-youtube';
 ```
 
-Finally, use as required:
-
-```html
-<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
-```
-
 ## Install with CDN
 
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.1.1/lite-youtube.js">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.2.0/lite-youtube.js">
 ```
 
-Finally, use as required:
+## Basic Usage
 
 ```html
-<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+  <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+```
+
+## Add Video Title
+
+```html
+<lite-youtube videoid="guJLfqTFfIw" videotitle="This is a video title"></lite-youtube>
+```
+
+## Change "Play" for Locale</h3>
+```html
+<lite-youtube
+   videoid="guJLfqTFfIw"
+   videoplay="Mirar"
+   videotitle="Mis hijos se burlan de mi español">
+</lite-youtube>
+```
+
+## Style It
+Add a class or just style it directly. Height and Width are responsive in the container (there is a min-height requirement of 315px to make the basic embed work easier).
+```html
+<style>
+  .styleIt {
+    width: 400px;
+    height: 400px;
+    margin: auto;
+  }
+</style>
+<lite-youtube class="styleIt" videoid="guJLfqTFfIw"></lite-youtube>
 ```
 
 ## Attributes
@@ -58,3 +82,5 @@ flexibility.
  | Name | Description | Default |
  | --- | --- | --- |
  | `videoid` | The YouTube videoid | ` ` |
+ | `videotitle` | The title of the video | `Video` |
+ | `videoplay` | The title of the play button (for translation) | `Play` |

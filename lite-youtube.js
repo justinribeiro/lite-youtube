@@ -85,6 +85,7 @@ class LiteYTEmbed extends HTMLElement {
           opacity: 0.8;
           border-radius: 14%; /* TODO: Consider replacing this with YT's actual svg. Eh. */
           transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+          border: 0;
         }
         #frame:hover .lty-playbtn {
           background-color: #f00;
@@ -114,16 +115,19 @@ class LiteYTEmbed extends HTMLElement {
         }
       </style>
       <div id="frame">
-        <div class="lty-playbtn"></div>
+        <button class="lty-playbtn"></button>
       </div>
     `;
     this.__domRefFrame = this.shadowRoot.querySelector('#frame');
+    this.__domRefPlayButton = this.shadowRoot.querySelector('.lty-playbtn');
   }
 
   setupComponent() {
     // Gotta encode the untrusted value
     // https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-2---attribute-escape-before-inserting-untrusted-data-into-html-common-attributes
-    this.videoId = encodeURIComponent(this.getAttribute('videoid'));
+    this.videoId = encodeURIComponent( this.getAttribute( 'videoid' ) );
+    this.videoTitle = this.getAttribute( 'videotitle' ) || 'Video';
+    this.videoPlay = this.getAttribute('videoplay') || 'Play';
 
     /**
      * Lo, the youtube placeholder image!  (aka the thumbnail, poster image, etc)
@@ -146,6 +150,8 @@ class LiteYTEmbed extends HTMLElement {
     LiteYTEmbed.addPrefetch('preload', this.posterUrl, 'image');
     // TODO: support dynamically setting the attribute via attributeChangedCallback
     this.__domRefFrame.style.backgroundImage = `url("${this.posterUrl}")`;
+    this.__domRefPlayButton.setAttribute('aria-label', `${this.videoPlay}: ${this.videoTitle}`);
+    this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
   }
 
   /**
