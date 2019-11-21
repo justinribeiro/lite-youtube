@@ -1,24 +1,24 @@
 /**
  *
- * The shadowDom version of Paul's concept: https://github.com/paulirish/lite-youtube-embed
+ * The shadowDom / Intersection Observer version of Paul's concept:
+ * https://github.com/paulirish/lite-youtube-embed
  *
- * A lightweight youtube embed. Still should feel the same to the user, just MUCH faster to initialize and paint.
+ * A lightweight YouTube embed. Still should feel the same to the user, just
+ * MUCH faster to initialize and paint.
  *
  * Thx to these as the inspiration
  *   https://storage.googleapis.com/amp-vs-non-amp/youtube-lazy.html
  *   https://autoplay-youtube-player.glitch.me/
  *
- * Once built it, I also found these:
- *   https://github.com/ampproject/amphtml/blob/master/extensions/amp-youtube (👍👍)
- *   https://github.com/Daugilas/lazyYT
- *   https://github.com/vb/lazyframe
+ * Once built it, I also found these (👍👍):
+ *   https://github.com/ampproject/amphtml/blob/master/extensions/amp-youtube
+ *   https://github.com/Daugilas/lazyYT https://github.com/vb/lazyframe
  */
 class LiteYTEmbed extends HTMLElement {
   constructor() {
     super();
-    this.setupDom();
-
     this.__iframeLoaded = false;
+    this.__setupDom();
   }
 
   static get observedAttributes() {
@@ -26,17 +26,18 @@ class LiteYTEmbed extends HTMLElement {
   }
 
   connectedCallback() {
-    // On hover (or tap), warm up the TCP connections we're (likely) about to use.
     this.addEventListener('pointerover', LiteYTEmbed.warmConnections, {
       once: true,
     });
-    // Once the user clicks, add the real iframe and drop our play button
-    // TODO: In the future we could be like amp-youtube and silently swap in the iframe during idle time
-    //   We'd want to only do this for in-viewport or near-viewport ones: https://github.com/ampproject/amphtml/pull/5003
-    this.addEventListener('click', e => this.addIframe());
+
+    this.addEventListener('click', e => this.__addIframe());
   }
 
-  setupDom() {
+  /**
+   * Define our shadowDOM for the component
+   * @private
+   */
+  __setupDom() {
     const shadowDom = this.attachShadow({mode: 'open'});
     shadowDom.innerHTML = `
       <style>
@@ -46,23 +47,20 @@ class LiteYTEmbed extends HTMLElement {
           padding-bottom: calc(100% / (16 / 9));
         }
 
+        #frame, #fallbackPlaceholder, iframe {
+          position: fixed;
+          width: 100%;
+          height: 100%;
+        }
+
         #frame {
-          width: 100%;
-          height: 100%;
-          background-color: #000;
-          background-position: center center;
-          background-size: cover;
           cursor: pointer;
-          position: fixed;
         }
 
-        iframe {
-          position: fixed;
-          width: 100%;
-          height: 100%;
+        #fallbackPlaceholder {
+          object-fit: cover;
         }
 
-        /* gradient */
         #frame::before {
           content: '';
           display: block;
@@ -75,6 +73,7 @@ class LiteYTEmbed extends HTMLElement {
           padding-bottom: 50px;
           width: 100%;
           transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+          z-index: 1;
         }
         /* play button */
         .lty-playbtn {
@@ -115,48 +114,41 @@ class LiteYTEmbed extends HTMLElement {
         }
       </style>
       <div id="frame">
+        <picture>
+          <source id="webpPlaceholder" type="image/webp">
+          <source id="jpegPlaceholder" type="image/jpeg">
+          <img id="fallbackPlaceholder" referrerpolicy="origin">
+        </picture>
         <button class="lty-playbtn"></button>
       </div>
     `;
     this.__domRefFrame = this.shadowRoot.querySelector('#frame');
+    this.__domRefImg = {
+      fallback: this.shadowRoot.querySelector('#fallbackPlaceholder'),
+      webp: this.shadowRoot.querySelector('#webpPlaceholder'),
+      jpeg: this.shadowRoot.querySelector('#jpegPlaceholder'),
+    };
     this.__domRefPlayButton = this.shadowRoot.querySelector('.lty-playbtn');
   }
 
-  setupComponent() {
-    // Gotta encode the untrusted value
-    // https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-2---attribute-escape-before-inserting-untrusted-data-into-html-common-attributes
-    this.videoId = encodeURIComponent(this.getAttribute( 'videoid' ));
+  /**
+   * Parse our attributes and fire up some placeholders
+   * @private
+   */
+  __setupComponent() {
+    this.videoId = encodeURIComponent(this.getAttribute('videoid'));
     this.videoTitle = this.getAttribute('videotitle') || 'Video';
-    this.videoPlay = this.getAttribute( 'videoplay' ) || 'Play';
+    this.videoPlay = this.getAttribute('videoplay') || 'Play';
+    this.autoLoad = this.getAttribute('autoload') === '' ? true : false;
 
-    // when set, this comes in as an empty string; when not set, undefined
-    this.autoLoad = this.getAttribute( 'autoload' ) === '' ? true : false;
+    this.__initImagePlaceholder();
 
-    /**
-     * Lo, the youtube placeholder image!  (aka the thumbnail, poster image, etc)
-     * There is much internet debate on the reliability of thumbnail URLs. Weak consensus is that you
-     * cannot rely on anything and have to use the YouTube Data API.
-     *
-     * amp-youtube also eschews using the API, so they just try sddefault with a hqdefault fallback:
-     *   https://github.com/ampproject/amphtml/blob/6039a6317325a8589586e72e4f98c047dbcbf7ba/extensions/amp-youtube/0.1/amp-youtube.js#L498-L537
-     * For now I'm gonna go with this confident (lol) assersion: https://stackoverflow.com/a/20542029, though I'll use `i.ytimg` to optimize for origin reuse.
-     *
-     * Worth noting that sddefault is _higher_ resolution than hqdefault. Naming is hard. ;)
-     * From my own testing, it appears that hqdefault is ALWAYS there sddefault is missing for ~10% of videos
-     *
-     * TODO: Do the sddefault->hqdefault fallback
-     *       - When doing this, apply referrerpolicy (https://github.com/ampproject/amphtml/pull/3940)
-     * TODO: Consider using webp if supported, falling back to jpg
-     */
-    this.posterUrl = `https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg`;
-    // Warm the connection for the poster image
-    LiteYTEmbed.addPrefetch('preload', this.posterUrl, 'image');
-    // TODO: support dynamically setting the attribute via attributeChangedCallback
-    this.__domRefFrame.style.backgroundImage = `url("${this.posterUrl}")`;
-    this.__domRefPlayButton.setAttribute('aria-label', `${this.videoPlay}: ${this.videoTitle}`);
-    this.setAttribute( 'title', `${this.videoPlay}: ${this.videoTitle}` );
+    this.__domRefPlayButton.setAttribute(
+      'aria-label',
+      `${this.videoPlay}: ${this.videoTitle}`,
+    );
+    this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
 
-    // fire up the intersection observer
     if (this.autoLoad) {
       this.__initIntersectionObserver();
     }
@@ -172,7 +164,7 @@ class LiteYTEmbed extends HTMLElement {
     switch (name) {
       case 'videoid': {
         if (oldVal !== newVal) {
-          this.setupComponent();
+          this.__setupComponent();
 
           // if we have a previous iframe, remove it and the activated class
           if (this.__domRefFrame.classList.contains('lyt-activated')) {
@@ -188,25 +180,63 @@ class LiteYTEmbed extends HTMLElement {
   }
 
   /**
+   * Inject the iframe into the component body
+   * @private
+   */
+  __addIframe() {
+    const iframeHTML = `
+<iframe frameborder="0"
+  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1"
+></iframe>`;
+    this.__domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
+    this.__domRefFrame.classList.add('lyt-activated');
+    this.__iframeLoaded = true;
+  }
+
+  /**
+   * Setup the placeholder image for the component
+   * @private
+   */
+  __initImagePlaceholder() {
+    // we don't know which image type to preload, so warm the connection
+    LiteYTEmbed.addPrefetch('preconnect', 'https://i.ytimg.com/');
+
+    const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/hqdefault.webp`;
+    const posterUrlJpeg = `https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg`;
+    this.__domRefImg.webp.srcset = posterUrlWebp;
+    this.__domRefImg.jpeg.srcset = posterUrlJpeg;
+    this.__domRefImg.fallback.src = posterUrlJpeg;
+    this.__domRefImg.fallback.setAttribute(
+      'aria-label',
+      `${this.videoPlay}: ${this.videoTitle}`,
+    );
+    this.__domRefImg.fallback.setAttribute(
+      'alt',
+      `${this.videoPlay}: ${this.videoTitle}`,
+    );
+  }
+
+  /**
    * Setup the Intersection Observer to load the iframe when scrolled into view
    * @private
    */
-  __initIntersectionObserver () {
+  __initIntersectionObserver() {
     if (
-      ('IntersectionObserver' in window) &&
-      ('IntersectionObserverEntry' in window)
+      'IntersectionObserver' in window &&
+      'IntersectionObserverEntry' in window
     ) {
       const options = {
         root: null,
         rootMargin: '0px',
-        threshold: 0
-      }
+        threshold: 0,
+      };
 
       const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           if (entry.isIntersecting && !this.__iframeLoaded) {
             LiteYTEmbed.warmConnections();
-            this.addIframe();
+            this.__addIframe();
             observer.unobserve(this);
           }
         });
@@ -231,40 +261,35 @@ class LiteYTEmbed extends HTMLElement {
   }
 
   /**
-   * Begin preconnecting to warm up the iframe load
-   * Since the embed's netwok requests load within its iframe,
-   *   preload/prefetch'ing them outside the iframe will only cause double-downloads.
-   * So, the best we can do is warm up a few connections to origins that are in the critical path.
+   * Begin preconnecting to warm up the iframe load Since the embed's netwok
+   * requests load within its iframe, preload/prefetch'ing them outside the
+   * iframe will only cause double-downloads. So, the best we can do is warm up
+   * a few connections to origins that are in the critical path.
    *
-   * Maybe `<link rel=preload as=document>` would work, but it's unsupported: http://crbug.com/593267
-   * But TBH, I don't think it'll happen soon with Site Isolation and split caches adding serious complexity.
+   * Maybe `<link rel=preload as=document>` would work, but it's unsupported:
+   * http://crbug.com/593267 But TBH, I don't think it'll happen soon with Site
+   * Isolation and split caches adding serious complexity.
    */
   static warmConnections() {
     if (LiteYTEmbed.preconnected) return;
-    // The iframe document and most of its subresources come right off youtube.com
+    // Host that YT uses to serve JS needed by player, per amp-youtube
+    LiteYTEmbed.addPrefetch('preconnect', 'https://s.ytimg.com');
+
+    // The iframe document and most of its subresources come right off
+    // youtube.com
     LiteYTEmbed.addPrefetch('preconnect', 'https://www.youtube.com');
+
     // The botguard script is fetched off from google.com
     LiteYTEmbed.addPrefetch('preconnect', 'https://www.google.com');
-    // Not certain if these ad related domains are in the critical path. Could verify with domain-specific throttling.
+
+    // TODO: Not certain if these ad related domains are in the critical path.
+    // Could verify with domain-specific throttling.
     LiteYTEmbed.addPrefetch(
       'preconnect',
       'https://googleads.g.doubleclick.net',
     );
     LiteYTEmbed.addPrefetch('preconnect', 'https://static.doubleclick.net');
     LiteYTEmbed.preconnected = true;
-  }
-
-  addIframe() {
-    // https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-2---attribute-escape-before-inserting-untrusted-data-into-html-common-attributes
-    const escapedVideoId = encodeURIComponent(this.videoId);
-    const iframeHTML = `
-<iframe frameborder="0"
-  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube.com/embed/${escapedVideoId}?autoplay=1"
-></iframe>`;
-    this.__domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
-    this.__domRefFrame.classList.add( 'lyt-activated' );
-    this.__iframeLoaded = true;
   }
 }
 // Register custom element

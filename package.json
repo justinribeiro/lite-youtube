@@ -15,8 +15,10 @@
     "youtube"
   ],
   "devDependencies": {
-    "eslint": "^6.6.0",
+    "eslint": "^6.4.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-plugin-html": "^6.0.0"
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-html": "^6.0.0",
+    "prettier": "^1.18.2"
   }
 }
