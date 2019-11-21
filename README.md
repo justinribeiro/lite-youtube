@@ -12,6 +12,7 @@
 * It's responsive 16:9
 * It's accessible via keyboard and will set ARIA via the `videotitle` attribute
 * It's locale ready; you can set the `videoplay` to have a properly locale based label
+* You can set `autoload` to use Intersection Observer to load the iframe when scrolled into view.
 
 ## Install
 
@@ -53,6 +54,7 @@ If you want the paste-and-go version, you can simply load it via CDN:
 ```
 
 ## Change "Play" for Locale</h3>
+
 ```html
 <lite-youtube
    videoid="guJLfqTFfIw"
@@ -62,7 +64,9 @@ If you want the paste-and-go version, you can simply load it via CDN:
 ```
 
 ## Style It
+
 Height and Width are responsive in the component.
+
 ```html
 <style>
   .styleIt {
@@ -73,6 +77,17 @@ Height and Width are responsive in the component.
 <div class="styleIt">
   <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
 </div>
+```
+
+## AutoLoad with IntersectionObserver
+
+Uses Intersection Observer if available to automatically load the YouTube iframe when scrolled into view.
+
+```html
+  <lite-youtube
+    videoid="guJLfqTFfIw"
+    autoload>
+   </lite-youtube>
 ```
 
 ## Attributes

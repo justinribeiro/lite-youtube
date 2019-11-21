@@ -10,7 +10,7 @@
         box-sizing: content-box;
       }
       body {
-        width: 800px;
+        max-width: 800px;
         margin: auto;
       }
       pre {
@@ -22,6 +22,9 @@
       }
       .styleIt {
         width: 400px;
+      }
+      #bigBlock {
+        height: 600px;
       }
     </style>
   </head>
@@ -61,6 +64,16 @@
     <div class="styleIt">
       <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
     </div>
+
+    <div id="bigBlock">
+      Scroll down to trigger autoLoad()
+    </div>
+    <h3>AutoLoad with IntersectionObserver</h3>
+    <pre>
+
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; videotitle=&quot;This is a video title&quot; autoload&gt;&lt;/lite-youtube&gt;
+    </pre>
+    <lite-youtube videoid="guJLfqTFfIw" videotitle="This is a video title" autoload></lite-youtube>
 
   </body>
 </html>

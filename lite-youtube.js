@@ -17,6 +17,8 @@ class LiteYTEmbed extends HTMLElement {
   constructor() {
     super();
     this.setupDom();
+
+    this.__iframeLoaded = false;
   }
 
   static get observedAttributes() {
@@ -123,9 +125,12 @@ class LiteYTEmbed extends HTMLElement {
   setupComponent() {
     // Gotta encode the untrusted value
     // https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html#rule-2---attribute-escape-before-inserting-untrusted-data-into-html-common-attributes
-    this.videoId = encodeURIComponent( this.getAttribute( 'videoid' ) );
-    this.videoTitle = this.getAttribute( 'videotitle' ) || 'Video';
-    this.videoPlay = this.getAttribute('videoplay') || 'Play';
+    this.videoId = encodeURIComponent(this.getAttribute( 'videoid' ));
+    this.videoTitle = this.getAttribute('videotitle') || 'Video';
+    this.videoPlay = this.getAttribute( 'videoplay' ) || 'Play';
+
+    // when set, this comes in as an empty string; when not set, undefined
+    this.autoLoad = this.getAttribute( 'autoload' ) === '' ? true : false;
 
     /**
      * Lo, the youtube placeholder image!  (aka the thumbnail, poster image, etc)
@@ -149,7 +154,12 @@ class LiteYTEmbed extends HTMLElement {
     // TODO: support dynamically setting the attribute via attributeChangedCallback
     this.__domRefFrame.style.backgroundImage = `url("${this.posterUrl}")`;
     this.__domRefPlayButton.setAttribute('aria-label', `${this.videoPlay}: ${this.videoTitle}`);
-    this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
+    this.setAttribute( 'title', `${this.videoPlay}: ${this.videoTitle}` );
+
+    // fire up the intersection observer
+    if (this.autoLoad) {
+      this.__initIntersectionObserver();
+    }
   }
 
   /**
@@ -174,6 +184,35 @@ class LiteYTEmbed extends HTMLElement {
       }
       default:
         break;
+    }
+  }
+
+  /**
+   * Setup the Intersection Observer to load the iframe when scrolled into view
+   * @private
+   */
+  __initIntersectionObserver () {
+    if (
+      ('IntersectionObserver' in window) &&
+      ('IntersectionObserverEntry' in window)
+    ) {
+      const options = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0
+      }
+
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && !this.__iframeLoaded) {
+            LiteYTEmbed.warmConnections();
+            this.addIframe();
+            observer.unobserve(this);
+          }
+        });
+      }, options);
+
+      observer.observe(this);
     }
   }
 
@@ -224,7 +263,8 @@ class LiteYTEmbed extends HTMLElement {
   src="https://www.youtube.com/embed/${escapedVideoId}?autoplay=1"
 ></iframe>`;
     this.__domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
-    this.__domRefFrame.classList.add('lyt-activated');
+    this.__domRefFrame.classList.add( 'lyt-activated' );
+    this.__iframeLoaded = true;
   }
 }
 // Register custom element
