@@ -6,13 +6,14 @@
 
 ## Features
 
-* No dependencies; it's just a vanilla web component.
-* It's fast yo.
-* It's Shadow Dom encapsulated!
-* It's responsive 16:9
-* It's accessible via keyboard and will set ARIA via the `videotitle` attribute
-* It's locale ready; you can set the `videoplay` to have a properly locale based label
-* You can set `autoload` to use Intersection Observer to load the iframe when scrolled into view.
+- No dependencies; it's just a vanilla web component.
+- It's fast yo.
+- It's Shadow Dom encapsulated!
+- It's responsive 16:9
+- It's accessible via keyboard and will set ARIA via the `videotitle` attribute
+- It's locale ready; you can set the `videoplay` to have a properly locale based label
+- You can set `autoload` to use Intersection Observer to load the iframe when scrolled into view.
+- Loads placeholder image as WebP with a Jpeg fallback
 
 ## Install
 
@@ -38,7 +39,7 @@ import '@justinribeiro/lite-youtube';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.4.1/lite-youtube.js">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.5.1/lite-youtube.js">
 ```
 
 ## Basic Usage
@@ -50,16 +51,20 @@ If you want the paste-and-go version, you can simply load it via CDN:
 ## Add Video Title
 
 ```html
-<lite-youtube videoid="guJLfqTFfIw" videotitle="This is a video title"></lite-youtube>
+<lite-youtube
+  videoid="guJLfqTFfIw"
+  videotitle="This is a video title"
+></lite-youtube>
 ```
 
 ## Change "Play" for Locale</h3>
 
 ```html
 <lite-youtube
-   videoid="guJLfqTFfIw"
-   videoplay="Mirar"
-   videotitle="Mis hijos se burlan de mi español">
+  videoid="guJLfqTFfIw"
+  videoplay="Mirar"
+  videotitle="Mis hijos se burlan de mi español"
+>
 </lite-youtube>
 ```
 
@@ -84,10 +89,7 @@ Height and Width are responsive in the component.
 Uses Intersection Observer if available to automatically load the YouTube iframe when scrolled into view.
 
 ```html
-  <lite-youtube
-    videoid="guJLfqTFfIw"
-    autoload>
-   </lite-youtube>
+<lite-youtube videoid="guJLfqTFfIw" autoload> </lite-youtube>
 ```
 
 ## Attributes
@@ -95,9 +97,9 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 The web component allows certain attributes to be give a little additional
 flexibility.
 
- | Name | Description | Default |
- | --- | --- | --- |
- | `videoid` | The YouTube videoid | ` ` |
- | `videotitle` | The title of the video | `Video` |
- | `videoplay` | The title of the play button (for translation) | `Play` |
- | `autoload` | Use Intersection Observer to load iframe when scrolled into view | `false` |
+| Name         | Description                                                      | Default |
+| ------------ | ---------------------------------------------------------------- | ------- |
+| `videoid`    | The YouTube videoid                                              | ``      |
+| `videotitle` | The title of the video                                           | `Video` |
+| `videoplay`  | The title of the play button (for translation)                   | `Play`  |
+| `autoload`   | Use Intersection Observer to load iframe when scrolled into view | `false` |
