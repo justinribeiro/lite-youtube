@@ -40,7 +40,7 @@ import '@justinribeiro/lite-youtube';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.5.2/lite-youtube.js">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.6.0/lite-youtube.js">
 ```
 
 ## Basic Usage
@@ -111,3 +111,4 @@ flexibility.
 | `videotitle` | The title of the video                                           | `Video` |
 | `videoplay`  | The title of the play button (for translation)                   | `Play`  |
 | `autoload`   | Use Intersection Observer to load iframe when scrolled into view | `false` |
+| `start`      | Set the point at which the video should start, in seconds        | `0`     |
