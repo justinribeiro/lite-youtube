@@ -106,11 +106,13 @@ class LiteYTEmbed extends HTMLElement {
           left: 50%;
           transform: translate3d(-50%, -50%, 0);
         }
+
         /* Post-click styles */
         .lyt-activated {
           cursor: unset;
         }
-        .lyt-activated::before,
+
+        #frame.lyt-activated::before,
         .lyt-activated .lty-playbtn {
           display: none;
         }
