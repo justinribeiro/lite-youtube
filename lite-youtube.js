@@ -141,6 +141,7 @@ class LiteYTEmbed extends HTMLElement {
     this.videoId = encodeURIComponent(this.getAttribute('videoid'));
     this.videoTitle = this.getAttribute('videotitle') || 'Video';
     this.videoPlay = this.getAttribute('videoplay') || 'Play';
+    this.videoStartAt = this.getAttribute('start') || 0;
     this.autoLoad = this.getAttribute('autoload') === '' ? true : false;
 
     this.__initImagePlaceholder();
@@ -189,7 +190,7 @@ class LiteYTEmbed extends HTMLElement {
     const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1"
+  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1&start=${this.videoStartAt}"
 ></iframe>`;
     this.__domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
     this.__domRefFrame.classList.add('lyt-activated');
