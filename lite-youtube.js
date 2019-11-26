@@ -44,11 +44,13 @@ class LiteYTEmbed extends HTMLElement {
         :host {
           contain: content;
           display: block;
+          position: relative;
+          width: 100%;
           padding-bottom: calc(100% / (16 / 9));
         }
 
         #frame, #fallbackPlaceholder, iframe {
-          position: fixed;
+          position: absolute;
           width: 100%;
           height: 100%;
         }
