@@ -12,6 +12,7 @@
 - It's responsive 16:9
 - It's accessible via keyboard and will set ARIA via the `videotitle` attribute
 - It's locale ready; you can set the `videoplay` to have a properly locale based label
+- Set the `start` attribute to start at a particular place in a video
 - You can set `autoload` to use Intersection Observer to load the iframe when scrolled into view.
 - Loads placeholder image as WebP with a Jpeg fallback
 
@@ -82,6 +83,13 @@ Height and Width are responsive in the component.
 <div class="styleIt">
   <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
 </div>
+```
+
+## Set a video start time
+
+```html
+<!-- Start at 5 seconds -->
+<lite-youtube videoid="guJLfqTFfIw" start="5"></lite-youtube>
 ```
 
 ## AutoLoad with IntersectionObserver
