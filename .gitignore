@@ -1,1 +1,5 @@
 node_modules
+package-lock.json
+*.js
+*.map
+*.d.ts

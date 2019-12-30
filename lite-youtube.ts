@@ -14,30 +14,82 @@
  *   https://github.com/ampproject/amphtml/blob/master/extensions/amp-youtube
  *   https://github.com/Daugilas/lazyYT https://github.com/vb/lazyframe
  */
-class LiteYTEmbed extends HTMLElement {
+export class LiteYTEmbed extends HTMLElement {
+  shadowRoot!: ShadowRoot;
+  private iframeLoaded = false;
+  private domRefFrame!: HTMLDivElement;
+  private domRefImg!: {
+    fallback: HTMLImageElement;
+    webp: HTMLSourceElement;
+    jpeg: HTMLSourceElement;
+  };
+  private domRefPlayButton!: HTMLButtonElement;
+
   constructor() {
     super();
-    this.__iframeLoaded = false;
-    this.__setupDom();
+    this.setupDom();
   }
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return ['videoid'];
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.addEventListener('pointerover', LiteYTEmbed.warmConnections, {
       once: true,
     });
 
-    this.addEventListener('click', e => this.__addIframe());
+    this.addEventListener('click', () => this.addIframe());
+  }
+
+  get videoId(): string {
+    return encodeURIComponent(this.getAttribute('videoid') || '');
+  }
+
+  set videoId(id: string) {
+    this.setAttribute('videoid', id);
+  }
+
+  get videoTitle(): string {
+    return this.getAttribute('videotitle') || 'Video';
+  }
+
+  set videoTitle(title: string) {
+    this.setAttribute('videotitle', title);
+  }
+
+  get videoPlay(): string {
+    return this.getAttribute('videoPlay') || 'Play';
+  }
+
+  set videoPlay(name: string) {
+    this.setAttribute('videoPlay', name);
+  }
+
+  get videoStartAt(): number {
+    return Number(this.getAttribute('videoPlay') || '0');
+  }
+
+  set videoStartAt(time: number) {
+    this.setAttribute('videoPlay', String(time));
+  }
+
+  get autoLoad(): boolean {
+    return this.hasAttribute('autoload');
+  }
+
+  set autoLoad(value: boolean) {
+    if (value) {
+      this.setAttribute('autoload', '');
+    } else {
+      this.removeAttribute('autoload');
+    }
   }
 
   /**
    * Define our shadowDOM for the component
-   * @private
    */
-  __setupDom() {
+  private setupDom(): void {
     const shadowDom = this.attachShadow({mode: 'open'});
     shadowDom.innerHTML = `
       <style>
@@ -126,36 +178,37 @@ class LiteYTEmbed extends HTMLElement {
         <button class="lty-playbtn"></button>
       </div>
     `;
-    this.__domRefFrame = this.shadowRoot.querySelector('#frame');
-    this.__domRefImg = {
-      fallback: this.shadowRoot.querySelector('#fallbackPlaceholder'),
-      webp: this.shadowRoot.querySelector('#webpPlaceholder'),
-      jpeg: this.shadowRoot.querySelector('#jpegPlaceholder'),
+    this.domRefFrame = this.shadowRoot.querySelector<HTMLDivElement>('#frame')!;
+    this.domRefImg = {
+      fallback: this.shadowRoot.querySelector<HTMLImageElement>(
+        '#fallbackPlaceholder',
+      )!,
+      webp: this.shadowRoot.querySelector<HTMLSourceElement>(
+        '#webpPlaceholder',
+      )!,
+      jpeg: this.shadowRoot.querySelector<HTMLSourceElement>(
+        '#jpegPlaceholder',
+      )!,
     };
-    this.__domRefPlayButton = this.shadowRoot.querySelector('.lty-playbtn');
+    this.domRefPlayButton = this.shadowRoot.querySelector<HTMLButtonElement>(
+      '.lty-playbtn',
+    )!;
   }
 
   /**
    * Parse our attributes and fire up some placeholders
-   * @private
    */
-  __setupComponent() {
-    this.videoId = encodeURIComponent(this.getAttribute('videoid'));
-    this.videoTitle = this.getAttribute('videotitle') || 'Video';
-    this.videoPlay = this.getAttribute('videoplay') || 'Play';
-    this.videoStartAt = this.getAttribute('start') || 0;
-    this.autoLoad = this.getAttribute('autoload') === '' ? true : false;
+  private setupComponent(): void {
+    this.initImagePlaceholder();
 
-    this.__initImagePlaceholder();
-
-    this.__domRefPlayButton.setAttribute(
+    this.domRefPlayButton.setAttribute(
       'aria-label',
       `${this.videoPlay}: ${this.videoTitle}`,
     );
     this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
 
     if (this.autoLoad) {
-      this.__initIntersectionObserver();
+      this.initIntersectionObserver();
     }
   }
 
@@ -165,16 +218,20 @@ class LiteYTEmbed extends HTMLElement {
    * @param {*} oldVal
    * @param {*} newVal
    */
-  attributeChangedCallback(name, oldVal, newVal) {
+  attributeChangedCallback(
+    name: string,
+    oldVal: unknown,
+    newVal: unknown,
+  ): void {
     switch (name) {
       case 'videoid': {
         if (oldVal !== newVal) {
-          this.__setupComponent();
+          this.setupComponent();
 
           // if we have a previous iframe, remove it and the activated class
-          if (this.__domRefFrame.classList.contains('lyt-activated')) {
-            this.__domRefFrame.classList.remove('lyt-activated');
-            this.shadowRoot.querySelector('iframe').remove();
+          if (this.domRefFrame.classList.contains('lyt-activated')) {
+            this.domRefFrame.classList.remove('lyt-activated');
+            this.shadowRoot.querySelector('iframe')!.remove();
           }
         }
         break;
@@ -186,39 +243,37 @@ class LiteYTEmbed extends HTMLElement {
 
   /**
    * Inject the iframe into the component body
-   * @private
    */
-  __addIframe() {
-    if (!this.__iframeLoaded) {
+  private addIframe(): void {
+    if (!this.iframeLoaded) {
       const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
   src="https://www.youtube.com/embed/${this.videoId}?autoplay=1&start=${this.videoStartAt}"
 ></iframe>`;
-      this.__domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
-      this.__domRefFrame.classList.add('lyt-activated');
-      this.__iframeLoaded = true;
+      this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
+      this.domRefFrame.classList.add('lyt-activated');
+      this.iframeLoaded = true;
     }
   }
 
   /**
    * Setup the placeholder image for the component
-   * @private
    */
-  __initImagePlaceholder() {
+  private initImagePlaceholder(): void {
     // we don't know which image type to preload, so warm the connection
     LiteYTEmbed.addPrefetch('preconnect', 'https://i.ytimg.com/');
 
     const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/hqdefault.webp`;
     const posterUrlJpeg = `https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg`;
-    this.__domRefImg.webp.srcset = posterUrlWebp;
-    this.__domRefImg.jpeg.srcset = posterUrlJpeg;
-    this.__domRefImg.fallback.src = posterUrlJpeg;
-    this.__domRefImg.fallback.setAttribute(
+    this.domRefImg.webp.srcset = posterUrlWebp;
+    this.domRefImg.jpeg.srcset = posterUrlJpeg;
+    this.domRefImg.fallback.src = posterUrlJpeg;
+    this.domRefImg.fallback.setAttribute(
       'aria-label',
       `${this.videoPlay}: ${this.videoTitle}`,
     );
-    this.__domRefImg.fallback.setAttribute(
+    this.domRefImg.fallback.setAttribute(
       'alt',
       `${this.videoPlay}: ${this.videoTitle}`,
     );
@@ -226,9 +281,8 @@ class LiteYTEmbed extends HTMLElement {
 
   /**
    * Setup the Intersection Observer to load the iframe when scrolled into view
-   * @private
    */
-  __initIntersectionObserver() {
+  private initIntersectionObserver(): void {
     if (
       'IntersectionObserver' in window &&
       'IntersectionObserverEntry' in window
@@ -241,9 +295,9 @@ class LiteYTEmbed extends HTMLElement {
 
       const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && !this.__iframeLoaded) {
+          if (entry.isIntersecting && !this.iframeLoaded) {
             LiteYTEmbed.warmConnections();
-            this.__addIframe();
+            this.addIframe();
             observer.unobserve(this);
           }
         });
@@ -253,17 +307,22 @@ class LiteYTEmbed extends HTMLElement {
     }
   }
 
+  private static preconnected = false;
+
   /**
    * Add a <link rel={preload | preconnect} ...> to the head
+   * @param {*} kind
+   * @param {*} url
+   * @param {*} as
    */
-  static addPrefetch(kind, url, as) {
+  private static addPrefetch(kind: string, url: string, as?: string): void {
     const linkElem = document.createElement('link');
     linkElem.rel = kind;
     linkElem.href = url;
     if (as) {
       linkElem.as = as;
     }
-    linkElem.crossorigin = true;
+    linkElem.crossOrigin = 'true';
     document.head.append(linkElem);
   }
 
@@ -277,7 +336,7 @@ class LiteYTEmbed extends HTMLElement {
    * http://crbug.com/593267 But TBH, I don't think it'll happen soon with Site
    * Isolation and split caches adding serious complexity.
    */
-  static warmConnections() {
+  private static warmConnections(): void {
     if (LiteYTEmbed.preconnected) return;
     // Host that YT uses to serve JS needed by player, per amp-youtube
     LiteYTEmbed.addPrefetch('preconnect', 'https://s.ytimg.com');
