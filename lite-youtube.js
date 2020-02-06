@@ -193,7 +193,7 @@ class LiteYTEmbed extends HTMLElement {
       const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1&start=${this.videoStartAt}"
+  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1&enablejsapi=1&start=${this.videoStartAt}"
 ></iframe>`;
       this.__domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.__domRefFrame.classList.add('lyt-activated');
