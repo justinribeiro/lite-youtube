@@ -1,5 +1,12 @@
 module.exports = {
-  extends: ['eslint:recommended', 'google', 'prettier'],
+  parser: '@typescript-eslint/parser',
+  extends: [
+    'eslint:recommended',
+    'google',
+    'prettier',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+  ],
   parserOptions: {
     ecmaVersion: 2018,
     sourceType: 'module',
@@ -7,7 +14,7 @@ module.exports = {
   env: {
     browser: true,
   },
-  plugins: ['html', 'lit'],
+  plugins: ['html', 'lit', '@typescript-eslint'],
   rules: {
     'max-len': [
       'error',

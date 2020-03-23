@@ -6,19 +6,32 @@
     "type": "git",
     "url": "git@github.com:justinribeiro/lite-youtube.git"
   },
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "lint": "npm run lint:eslint && npm run lint:prettier",
+    "lint:eslint": "eslint *.ts --ignore-path .gitignore",
+    "lint:prettier": "prettier --check *.ts --ignore-path .gitignore",
+    "postinstall": "npm run build",
+    "prepublishOnly": "npm run build"
+  },
   "license": "MIT",
   "version": "0.6.2",
   "main": "lite-youtube.js",
   "module": "lite-youtube.js",
+  "types": "lite-youtube.d.ts",
   "keywords": [
     "web components",
     "youtube"
   ],
   "devDependencies": {
-    "eslint": "^6.4.0",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^6.3.0",
+    "eslint-config-prettier": "^6.9.0",
     "eslint-plugin-html": "^6.0.0",
-    "prettier": "^1.18.2"
+    "eslint-plugin-lit": "^1.2.0",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.4"
   }
 }
