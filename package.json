@@ -15,7 +15,7 @@
     "prepublishOnly": "npm run build"
   },
   "license": "MIT",
-  "version": "0.6.2",
+  "version": "0.7.0",
   "main": "lite-youtube.js",
   "module": "lite-youtube.js",
   "types": "lite-youtube.d.ts",
