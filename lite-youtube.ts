@@ -360,3 +360,9 @@ export class LiteYTEmbed extends HTMLElement {
 }
 // Register custom element
 customElements.define('lite-youtube', LiteYTEmbed);
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'lite-youtube': LiteYTEmbed;
+  }
+}
