@@ -13,6 +13,11 @@
     "lint:prettier": "prettier --check *.ts --ignore-path .gitignore",
     "prepublishOnly": "npm run build"
   },
+  "files": [
+    "lite-youtube.d.ts",
+    "lite-youtube.js",
+    "lite-youtube.js.map"
+  ],
   "license": "MIT",
   "version": "0.7.1",
   "main": "lite-youtube.js",
