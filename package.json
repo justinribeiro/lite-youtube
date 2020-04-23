@@ -19,7 +19,7 @@
     "lite-youtube.js.map"
   ],
   "license": "MIT",
-  "version": "0.7.1",
+  "version": "0.8.0",
   "main": "lite-youtube.js",
   "module": "lite-youtube.js",
   "types": "lite-youtube.d.ts",
