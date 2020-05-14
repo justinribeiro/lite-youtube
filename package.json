@@ -1,10 +1,10 @@
 {
-  "name": "@justinribeiro/lite-youtube",
-  "description": "A web component that loads YouTube embed iframes faster. ShadowDom based version of Paul Irish' concept.",
-  "author": "Justin Ribeiro <justin@justinribeiro.com>",
+  "name": "@slightlyoff/lite-vimeo",
+  "description": "A web component that loads Vimeo embed iframes faster. ShadowDom based version of Paul Irish' concept.",
+  "author": "Alex Russell <slightlyoff@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git@github.com:justinribeiro/lite-youtube.git"
+    "url": "git@github.com:slightlyoff/lite-vimeo.git"
   },
   "scripts": {
     "build": "tsc --project tsconfig.json",
@@ -14,18 +14,18 @@
     "prepublishOnly": "npm run build"
   },
   "files": [
-    "lite-youtube.d.ts",
-    "lite-youtube.js",
-    "lite-youtube.js.map"
+    "lite-vimeo.d.ts",
+    "lite-vimeo.js",
+    "lite-vimeo.js.map"
   ],
   "license": "MIT",
   "version": "0.8.0",
-  "main": "lite-youtube.js",
-  "module": "lite-youtube.js",
-  "types": "lite-youtube.d.ts",
+  "main": "lite-vimeo.js",
+  "module": "lite-vimeo.js",
+  "types": "lite-vimeo.d.ts",
   "keywords": [
     "web components",
-    "youtube"
+    "vimeo"
   ],
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.29.0",

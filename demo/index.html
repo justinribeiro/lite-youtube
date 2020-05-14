@@ -6,8 +6,8 @@
       name="viewport"
       content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
     />
-    <title>lite-youtube demo</title>
-    <script type="module" src="../lite-youtube.js"></script>
+    <title>lite-vimeo demo</title>
+    <script type="module" src="../lite-vimeo.js"></script>
     <style>
       * {
         box-sizing: content-box;
@@ -32,56 +32,55 @@
     </style>
   </head>
   <body>
+
     <h3>Basic Usage</h3>
     <pre>
-
-&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;
+&lt;lite-vimeo videoid=&quot;364402896&quot;&gt;&lt;/lite-vimeo&gt;
     </pre>
-    <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+    <lite-vimeo videoid="364402896"></lite-vimeo>
 
     <h3>Add Video Title</h3>
     <pre>
 
-&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; videotitle=&quot;This is a video title&quot;&gt;&lt;/lite-youtube&gt;
+&lt;lite-vimeo videoid=&quot;364402896&quot; videotitle=&quot;This is a video title&quot;&gt;&lt;/lite-vimeo&gt;
     </pre>
-    <lite-youtube
-      videoid="guJLfqTFfIw"
+    <lite-vimeo
+      videoid="364402896"
       videotitle="This is a video title"
-    ></lite-youtube>
+    ></lite-vimeo>
 
     <h3>Change "Play" for Locale</h3>
     <pre>
-
-&lt;lite-youtube
-   videoid=&quot;guJLfqTFfIw&quot;
+&lt;lite-vimeo
+   videoid=&quot;364402896&quot;
    videoplay=&quot;Mirar&quot;
    videotitle=&quot;Mis hijos se burlan de mi espa&ntilde;ol&quot;&gt;
-&lt;/lite-youtube&gt;
+&lt;/lite-vimeo&gt;
     </pre>
-    <lite-youtube
-      videoid="guJLfqTFfIw"
+    <lite-vimeo
+      videoid="364402896"
       videoplay="Mirar"
       videotitle="Mis hijos se burlan de mi español"
-    ></lite-youtube>
+    ></lite-vimeo>
 
     <h3>Style It</h3>
     <p>Height and Width are responsive in the component.</p>
     <pre>
-
 &lt;style&gt;&#10;  .styleIt {&#10;    width: 400px;&#10;    margin: auto;&#10;  }&#10;&lt;/style&gt;
-&lt;div class=&quot;styleIt&quot;&gt;&#10;      &lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;&#10;    &lt;/div&gt;
+&lt;div class=&quot;styleIt&quot;&gt;&#10;  &lt;lite-vimeo videoid=&quot;364402896&quot;&gt;&lt;/lite-vimeo&gt;&#10;&lt;/div&gt;
     </pre>
     <div class="styleIt">
-      <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+      <lite-vimeo videoid="364402896"></lite-vimeo>
     </div>
 
     <h3>Set video start time</h3>
     <pre>
-
-&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; start=&quot;5&quot;&gt;&lt;/lite-youtube&gt;
+&lt;lite-vimeo 
+   videoid=&quot;364402896&quot; 
+   <b>start=&quot;5m30s&quot;</b>&gt;&lt;/lite-vimeo&gt;
     </pre>
     <div>
-      <lite-youtube videoid="guJLfqTFfIw" start="5"></lite-youtube>
+      <lite-vimeo videoid="364402896" start="5m30s"></lite-vimeo>
     </div>
 
     <div id="bigBlock">
@@ -90,12 +89,24 @@
     <h3>AutoLoad with IntersectionObserver</h3>
     <pre>
 
-&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; videotitle=&quot;This is a video title&quot; autoload&gt;&lt;/lite-youtube&gt;
+&lt;lite-vimeo videoid=&quot;364402896&quot; videotitle=&quot;This is a video title&quot; <b>autoload</b>&gt;&lt;/lite-vimeo&gt;
     </pre>
-    <lite-youtube
-      videoid="guJLfqTFfIw"
+    <lite-vimeo
+      videoid="364402896"
       videotitle="This is a video title"
       autoload
-    ></lite-youtube>
+    ></lite-vimeo>
+
+    <h3>Autoplay</h3>
+    <pre>
+&lt;lite-vimeo 
+   videoid=&quot;364402896&quot; 
+   autoload <b>autoplay</b>
+   start=&quot;5m30s&quot;&gt;&lt;/lite-vimeo&gt;
+    </pre>
+    <div>
+      <lite-vimeo videoid="364402896" autoload autoplay start="5m30s"></lite-vimeo>
+    </div>
+
   </body>
 </html>
