@@ -19,7 +19,7 @@
     "lite-vimeo.js.map"
   ],
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "lite-vimeo.js",
   "module": "lite-vimeo.js",
   "types": "lite-vimeo.d.ts",

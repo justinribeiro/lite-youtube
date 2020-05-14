@@ -101,11 +101,11 @@ export class LiteVimeoEmbed extends HTMLElement {
     }
   }
 
-  get autoplay(): boolean {
+  get autoPlay(): boolean {
     return this.hasAttribute('autoplay');
   }
 
-  set autoplay(value: boolean) {
+  set autoPlay(value: boolean) {
     if (value) {
       this.setAttribute('autoplay', 'autoplay');
     } else {
@@ -284,7 +284,8 @@ export class LiteVimeoEmbed extends HTMLElement {
        *  </iframe>
        */
       // FIXME: add a setting for autoplay
-      let apValue = this.autoplay ? "autoplay=1" : "";
+      let apValue = ((this.autoLoad && this.autoPlay) || (!this.autoLoad)) ? 
+                        "autoplay=1" : "";
       let srcUrl = new URL(
         `/video/${this.videoId}?${apValue}&#t=${this.videoStartAt}`,
         "https://player.vimeo.com/"
