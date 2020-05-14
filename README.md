@@ -1,8 +1,10 @@
-[![npm version](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube)
+[![npm version](https://badge.fury.io/js/%40slightlyoff%2Flite-vimeo.svg)](https://badge.fury.io/js/%40slightlyoff%2Flite-vimeo)
 
-# \<lite-youtube\>
+# \<lite-vimeo\>
 
-> A web component that displays render YouTube embeds faster. The shadowDom web component version of Paul's [lite-youtube-embed](https://github.com/paulirish/lite-youtube-embed).
+> A web component that displays Vimeo embeds faster. Based on Justin Ribeiro's excellent [\<lite-youtube\>](https://github.com/justinribeiro/lite-youtube), which, in turn, is a Shadow DOM version of Paul's [lite-youtube-embed](https://github.com/paulirish/lite-youtube-embed).
+
+This is basically a rebadge of Justin's component, but for Vimeo.
 
 ## Features
 
@@ -24,15 +26,15 @@ available on NPM:
 Install code-block:
 
 ```sh
-npm i @justinribeiro/lite-youtube
+npm i @slightlyoff/lite-vimeo
 # or
-yarn add @justinribeiro/lite-youtube
+yarn add @slightlyoff/lite-vimeo
 ```
 
 After install, import into your project:
 
 ```js
-import '@justinribeiro/lite-youtube';
+import '@slightlyoff/lite-vimeo';
 ```
 
 ## Install with CDN
@@ -40,33 +42,32 @@ import '@justinribeiro/lite-youtube';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.6.2/lite-youtube.js">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@slightlyoff/lite-vimeo@0.1.0/lite-vimeo.js">
 ```
 
 ## Basic Usage
 
 ```html
-<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+<lite-vimeo videoid="364402896"></lite-vimeo>
 ```
 
 ## Add Video Title
 
 ```html
-<lite-youtube
-  videoid="guJLfqTFfIw"
+<lite-vimeo
+  videoid="364402896"
   videotitle="This is a video title"
-></lite-youtube>
+></lite-vimeo>
 ```
 
 ## Change "Play" for Locale</h3>
 
 ```html
-<lite-youtube
-  videoid="guJLfqTFfIw"
+<lite-vimeo
+  videoid="364402896"
   videoplay="Mirar"
   videotitle="Mis hijos se burlan de mi español"
->
-</lite-youtube>
+></lite-vimeo>
 ```
 
 ## Style It
@@ -81,15 +82,15 @@ Height and Width are responsive in the component.
   }
 </style>
 <div class="styleIt">
-  <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+  <lite-vimeo videoid="364402896"></lite-vimeo>
 </div>
 ```
 
 ## Set a video start time
 
 ```html
-<!-- Start at 5 seconds -->
-<lite-youtube videoid="guJLfqTFfIw" start="5"></lite-youtube>
+<!-- Start at 5 min, 30 seconds -->
+<lite-vimeo videoid="364402896" start="5m30s"></lite-vimeo>
 ```
 
 ## AutoLoad with IntersectionObserver
@@ -97,7 +98,13 @@ Height and Width are responsive in the component.
 Uses Intersection Observer if available to automatically load the YouTube iframe when scrolled into view.
 
 ```html
-<lite-youtube videoid="guJLfqTFfIw" autoload> </lite-youtube>
+<lite-vimeo videoid="364402896" autoload></lite-vimeo>
+```
+
+## Auto Play (requires AutoLoad)
+
+```html
+<lite-vimeo videoid="364402896" autoload autoplay></lite-vimeo>
 ```
 
 ## Attributes
@@ -111,4 +118,5 @@ flexibility.
 | `videotitle` | The title of the video                                           | `Video` |
 | `videoplay`  | The title of the play button (for translation)                   | `Play`  |
 | `autoload`   | Use Intersection Observer to load iframe when scrolled into view | `false` |
+| `autoplay`   | Video attempts to play automatically if auto-load set and browser allows it | `false` |
 | `start`      | Set the point at which the video should start, in seconds        | `0`     |
