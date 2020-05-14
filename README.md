@@ -42,7 +42,7 @@ import '@slightlyoff/lite-vimeo';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@slightlyoff/lite-vimeo@0.1.0/lite-vimeo.js">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@slightlyoff/lite-vimeo@0.1.1/lite-vimeo.js">
 ```
 
 ## Basic Usage
