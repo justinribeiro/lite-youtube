@@ -67,11 +67,11 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   get videoStartAt(): number {
-    return Number(this.getAttribute('videoPlay') || '0');
+    return Number(this.getAttribute('videoStartAt') || '0');
   }
 
   set videoStartAt(time: number) {
-    this.setAttribute('videoPlay', String(time));
+    this.setAttribute('videoStartAt', String(time));
   }
 
   get autoLoad(): boolean {
