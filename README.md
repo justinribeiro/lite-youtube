@@ -102,7 +102,7 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 
 ## YouTube QueryParams
 
-Use any YouTube queryparmas you like
+Use any [YouTube Embedded Players and Player Parameters](https://developers.google.com/youtube/player_parameters) you like
 
 ```html
 <lite-youtube videoid="guJLfqTFfIw" params="controls=0&enablejsapi=1">
@@ -114,10 +114,11 @@ Use any YouTube queryparmas you like
 The web component allows certain attributes to be give a little additional
 flexibility.
 
-| Name         | Description                                                      | Default |
-| ------------ | ---------------------------------------------------------------- | ------- |
-| `videoid`    | The YouTube videoid                                              | ``      |
-| `videotitle` | The title of the video                                           | `Video` |
-| `videoplay`  | The title of the play button (for translation)                   | `Play`  |
-| `autoload`   | Use Intersection Observer to load iframe when scrolled into view | `false` |
-| `start`      | Set the point at which the video should start, in seconds        | `0`     |
+| Name           | Description                                                      | Default |
+| -------------- | ---------------------------------------------------------------- | ------- |
+| `videoid`      | The YouTube videoid                                              | ``      |
+| `videotitle`   | The title of the video                                           | `Video` |
+| `videoplay`    | The title of the play button (for translation)                   | `Play`  |
+| `videoStartAt` | Set the point at which the video should start, in seconds        | `0`     |
+| `autoload`     | Use Intersection Observer to load iframe when scrolled into view | `false` |
+| `params`       | Set YouTube query parameters                                     | ``      |
