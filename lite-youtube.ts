@@ -86,6 +86,10 @@ export class LiteYTEmbed extends HTMLElement {
     }
   }
 
+  get params(): string {
+    return `start=${this.videoStartAt}&${this.getAttribute('params')}`;
+  }
+
   /**
    * Define our shadowDOM for the component
    */
@@ -249,7 +253,7 @@ export class LiteYTEmbed extends HTMLElement {
       const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1&start=${this.videoStartAt}"
+  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1&${this.params}"
 ></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('lyt-activated');

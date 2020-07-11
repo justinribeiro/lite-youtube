@@ -89,7 +89,7 @@ Height and Width are responsive in the component.
 
 ```html
 <!-- Start at 5 seconds -->
-<lite-youtube videoid="guJLfqTFfIw" start="5"></lite-youtube>
+<lite-youtube videoid="guJLfqTFfIw" videoStartAt="5"></lite-youtube>
 ```
 
 ## AutoLoad with IntersectionObserver
@@ -98,6 +98,15 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 
 ```html
 <lite-youtube videoid="guJLfqTFfIw" autoload> </lite-youtube>
+```
+
+## YouTube QueryParams
+
+Use any YouTube queryparmas you like
+
+```html
+<lite-youtube videoid="guJLfqTFfIw" params="controls=0&enablejsapi=1">
+</lite-youtube>
 ```
 
 ## Attributes

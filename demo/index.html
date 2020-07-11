@@ -78,10 +78,10 @@
     <h3>Set video start time</h3>
     <pre>
 
-&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; start=&quot;5&quot;&gt;&lt;/lite-youtube&gt;
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; videoStartAt=&quot;5&quot;&gt;&lt;/lite-youtube&gt;
     </pre>
     <div>
-      <lite-youtube videoid="guJLfqTFfIw" start="5"></lite-youtube>
+      <lite-youtube videoid="guJLfqTFfIw" videoStartAt="5"></lite-youtube>
     </div>
 
     <div id="bigBlock">
@@ -96,6 +96,16 @@
       videoid="guJLfqTFfIw"
       videotitle="This is a video title"
       autoload
+    ></lite-youtube>
+
+    <h3>YouTube QueryParams</h3>
+    <pre>
+
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; params=&quot;controls=0&amp;enablejsapi=1&quot;&gt;&lt;/lite-youtube&gt;
+    </pre>
+    <lite-youtube
+      videoid="guJLfqTFfIw"
+      params="controls=0&enablejsapi=1"
     ></lite-youtube>
   </body>
 </html>
