@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube)
+[![npm version](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube) [![min+gzip](https://badgen.net/bundlephobia/minzip/@justinribeiro/lite-youtube)](https://bundlephobia.com/result?p=@justinribeiro/lite-youtube)
 
 # \<lite-youtube\>
 
