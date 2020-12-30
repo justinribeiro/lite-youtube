@@ -18,14 +18,14 @@
 
 /*
  * Vimeo example embed markup:
-<iframe src="https://player.vimeo.com/video/364402896" 
-  width="640" height="360" 
-  frameborder="0" 
+<iframe src="https://player.vimeo.com/video/364402896"
+  width="640" height="360"
+  frameborder="0"
   allow="autoplay; fullscreen" allowfullscreen>
 </iframe>
 <p><a href="https://vimeo.com/364402896">
-  Alex Russell - The Mobile Web: MIA</a> from 
-    <a href="https://vimeo.com/fronteers">Fronteers</a> 
+  Alex Russell - The Mobile Web: MIA</a> from
+    <a href="https://vimeo.com/fronteers">Fronteers</a>
     on <a href="https://vimeo.com">Vimeo</a>.
 </p>
  */
@@ -201,7 +201,12 @@ export class LiteVimeoEmbed extends HTMLElement {
         <picture>
           <source id="webpPlaceholder" type="image/webp">
           <source id="jpegPlaceholder" type="image/jpeg">
-          <img id="fallbackPlaceholder" referrerpolicy="origin">
+          <img id="fallbackPlaceholder"
+               referrerpolicy="origin"
+               width="1100"
+               height="619"
+               decoding="async"
+               loading="lazy">
         </picture>
         <button class="lvo-playbtn"></button>
       </div>
@@ -277,16 +282,16 @@ export class LiteVimeoEmbed extends HTMLElement {
       /**
        * Vimeo example embed markup:
        *
-       *  <iframe src="https://player.vimeo.com/video/364402896#t=1m3s" 
-       *    width="640" height="360" 
-       *    frameborder="0" 
+       *  <iframe src="https://player.vimeo.com/video/364402896#t=1m3s"
+       *    width="640" height="360"
+       *    frameborder="0"
        *    allow="autoplay; fullscreen" allowfullscreen>
        *  </iframe>
        */
       // FIXME: add a setting for autoplay
-      let apValue = ((this.autoLoad && this.autoPlay) || (!this.autoLoad)) ? 
+      const apValue = ((this.autoLoad && this.autoPlay) || (!this.autoLoad)) ?
                         "autoplay=1" : "";
-      let srcUrl = new URL(
+      const srcUrl = new URL(
         `/video/${this.videoId}?${apValue}&#t=${this.videoStartAt}`,
         "https://player.vimeo.com/"
       );
@@ -294,7 +299,7 @@ export class LiteVimeoEmbed extends HTMLElement {
       // TODO: construct src value w/ URL constructor
       const iframeHTML = `
 <iframe frameborder="0"
-  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
   allowfullscreen src="${srcUrl}"></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('lvo-activated');
@@ -313,19 +318,22 @@ export class LiteVimeoEmbed extends HTMLElement {
 
     // API is the video-id based
     // http://vimeo.com/api/v2/video/364402896.json
-    let api_url = `https://vimeo.com/api/v2/video/${this.videoId}.json`;
+    const apiUrl = `https://vimeo.com/api/v2/video/${this.videoId}.json`;
 
     // Now fetch the JSON that locates our placeholder from vimeo's JSON API
-    let api_response = (await (await fetch(api_url)).json())[0];
+    const apiResponse = (await (await fetch(apiUrl)).json())[0];
 
     // Extract the image id, e.g. 819916979, from a URL like:
     // thumbnail_large: "https://i.vimeocdn.com/video/819916979_640.jpg"
-    let tn_large = api_response.thumbnail_large;
-    let imgId = (tn_large.substr(tn_large.lastIndexOf("/") + 1)).split("_")[0];
+    const tnLarge = apiResponse.thumbnail_large;
+    const imgId = (tnLarge.substr(tnLarge.lastIndexOf("/") + 1)).split("_")[0];
 
-    // const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/hqdefault.webp`;
-    const posterUrlWebp = `https://i.vimeocdn.com/video/${imgId}.webp?mw=1100&mh=619&q=70`;
-    const posterUrlJpeg = `https://i.vimeocdn.com/video/${imgId}.jpg?mw=1100&mh=619&q=70`;
+    // const posterUrlWebp =
+    //    `https://i.ytimg.com/vi_webp/${this.videoId}/hqdefault.webp`;
+    const posterUrlWebp =
+          `https://i.vimeocdn.com/video/${imgId}.webp?mw=1100&mh=619&q=70`;
+    const posterUrlJpeg =
+          `https://i.vimeocdn.com/video/${imgId}.jpg?mw=1100&mh=619&q=70`;
     this.domRefImg.webp.srcset = posterUrlWebp;
     this.domRefImg.jpeg.srcset = posterUrlJpeg;
     this.domRefImg.fallback.src = posterUrlJpeg;
