@@ -95,7 +95,7 @@ Height and Width are responsive in the component.
 
 ## AutoLoad with IntersectionObserver
 
-Uses Intersection Observer if available to automatically load the YouTube iframe when scrolled into view.
+Uses Intersection Observer if available to automatically load the Vimeo iframe when scrolled into view.
 
 ```html
 <lite-vimeo videoid="364402896" autoload></lite-vimeo>
@@ -114,7 +114,7 @@ flexibility.
 
 | Name         | Description                                                      | Default |
 | ------------ | ---------------------------------------------------------------- | ------- |
-| `videoid`    | The YouTube videoid                                              | ``      |
+| `videoid`    | The Vimeo videoid                                              | ``      |
 | `videotitle` | The title of the video                                           | `Video` |
 | `videoplay`  | The title of the play button (for translation)                   | `Play`  |
 | `autoload`   | Use Intersection Observer to load iframe when scrolled into view | `false` |
