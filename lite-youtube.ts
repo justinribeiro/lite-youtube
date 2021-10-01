@@ -194,9 +194,8 @@ export class LiteYTEmbed extends HTMLElement {
         '#jpegPlaceholder',
       )!,
     };
-    this.domRefPlayButton = this.shadowRoot.querySelector<HTMLButtonElement>(
-      '.lty-playbtn',
-    )!;
+    this.domRefPlayButton =
+      this.shadowRoot.querySelector<HTMLButtonElement>('.lty-playbtn')!;
   }
 
   /**
@@ -248,13 +247,16 @@ export class LiteYTEmbed extends HTMLElement {
 
   /**
    * Inject the iframe into the component body
+   * @param {boolean} isIntersectionObserver
    */
-  private addIframe(): void {
+  private addIframe(isIntersectionObserver = false): void {
     if (!this.iframeLoaded) {
+      // Don't autoplay the intersection observer injection, it's weird
+      const autoplay = isIntersectionObserver ? 0 : 1;
       const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube.com/embed/${this.videoId}?autoplay=1&${this.params}"
+  src="https://www.youtube.com/embed/${this.videoId}?autoplay=${autoplay}&${this.params}"
 ></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('lyt-activated');
@@ -302,7 +304,7 @@ export class LiteYTEmbed extends HTMLElement {
         entries.forEach(entry => {
           if (entry.isIntersecting && !this.iframeLoaded) {
             LiteYTEmbed.warmConnections();
-            this.addIframe();
+            this.addIframe(true);
             observer.unobserve(this);
           }
         });
