@@ -1,6 +1,4 @@
-[![npm version](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/%40justinribeiro%2Flite-youtube) [![min+gzip](https://badgen.net/bundlephobia/minzip/@justinribeiro/lite-youtube)](https://bundlephobia.com/result?p=@justinribeiro/lite-youtube)
-
-[![](https://data.jsdelivr.com/v1/package/npm/@justinribeiro/lite-youtube/badge)](https://www.jsdelivr.com/package/npm/@justinribeiro/lite-youtube)
+[![npm version](https://badge.fury.io/js/@justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/@justinribeiro%2Flite-youtube) [![min+gzip](https://badgen.net/bundlephobia/minzip/@justinribeiro/lite-youtube)](https://bundlephobia.com/result?p=@justinribeiro/lite-youtube) [![](https://data.jsdelivr.com/v1/package/npm/@justinribeiro/lite-youtube/badge)](https://www.jsdelivr.com/package/npm/@justinribeiro/lite-youtube)
 
 # \<lite-youtube\>
 
@@ -42,7 +40,7 @@ import '@justinribeiro/lite-youtube';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@0.9.2/lite-youtube.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.0.0/lite-youtube.js"></script>
 ```
 
 ## Basic Usage
