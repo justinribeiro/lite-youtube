@@ -121,5 +121,6 @@ flexibility.
 | `videoplay`    | The title of the play button (for translation)                   | `Play`  |
 | `videoStartAt` | Set the point at which the video should start, in seconds        | `0`     |
 | `posterquality`| Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault) | `hqdefault`  |
+| `nocookie`     | Use youtube-nocookie.com as iframe embed uri | `false` |
 | `autoload`     | Use Intersection Observer to load iframe when scrolled into view | `false` |
 | `params`       | Set YouTube query parameters                                     | ``      |
