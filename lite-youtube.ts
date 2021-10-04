@@ -78,11 +78,15 @@ export class LiteYTEmbed extends HTMLElement {
     return this.hasAttribute('autoload');
   }
 
-  set autoLoad(value: boolean) {
+  get noCookie(): boolean {
+    return this.hasAttribute('nocookie');
+  }
+
+  set noCookie(value: boolean) {
     if (value) {
-      this.setAttribute('autoload', '');
+      this.setAttribute('nocookie', '');
     } else {
-      this.removeAttribute('autoload');
+      this.removeAttribute('nocookie');
     }
   }
 
@@ -261,10 +265,11 @@ export class LiteYTEmbed extends HTMLElement {
     if (!this.iframeLoaded) {
       // Don't autoplay the intersection observer injection, it's weird
       const autoplay = isIntersectionObserver ? 0 : 1;
+      const wantsNoCookie = this.noCookie ? '-nocookie' : '';
       const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube.com/embed/${this.videoId}?autoplay=${autoplay}&${this.params}"
+  src="https://www.youtube${wantsNoCookie}.com/embed/${this.videoId}?autoplay=${autoplay}&${this.params}"
 ></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('lyt-activated');
