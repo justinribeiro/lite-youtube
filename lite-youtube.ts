@@ -274,6 +274,15 @@ export class LiteYTEmbed extends HTMLElement {
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('lyt-activated');
       this.iframeLoaded = true;
+      this.dispatchEvent(
+        new CustomEvent('liteYoutubeIframeLoaded', {
+          detail: {
+            videoId: this.videoId,
+          },
+          bubbles: true,
+          cancelable: true,
+        }),
+      );
     }
   }
 
