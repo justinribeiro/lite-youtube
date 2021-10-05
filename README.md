@@ -1,8 +1,10 @@
 [![npm version](https://badge.fury.io/js/@justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/@justinribeiro%2Flite-youtube) [![min+gzip](https://badgen.net/bundlephobia/minzip/@justinribeiro/lite-youtube)](https://bundlephobia.com/result?p=@justinribeiro/lite-youtube) [![](https://data.jsdelivr.com/v1/package/npm/@justinribeiro/lite-youtube/badge)](https://www.jsdelivr.com/package/npm/@justinribeiro/lite-youtube)
 
+![Statements](https://img.shields.io/badge/statements-97.67%25-brightgreen.svg) ![Branches](https://img.shields.io/badge/branches-86.2%25-yellow.svg) ![Functions](https://img.shields.io/badge/functions-88%25-yellow.svg) ![Lines](https://img.shields.io/badge/lines-97.67%25-brightgreen.svg)
+
 # \<lite-youtube\>
 
-> A web component that displays render YouTube embeds faster. The shadowDom web component version of Paul's [lite-youtube-embed](https://github.com/paulirish/lite-youtube-embed).
+> A web component that renders YouTube embeds faster. The ShadowDom web component version of Paul's [lite-youtube-embed](https://github.com/paulirish/lite-youtube-embed).
 
 ## Features
 

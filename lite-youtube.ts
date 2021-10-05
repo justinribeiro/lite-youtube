@@ -91,20 +91,8 @@ export class LiteYTEmbed extends HTMLElement {
     return this.hasAttribute('nocookie');
   }
 
-  set noCookie(value: boolean) {
-    if (value) {
-      this.setAttribute('nocookie', '');
-    } else {
-      this.removeAttribute('nocookie');
-    }
-  }
-
   get posterQuality(): string {
     return this.getAttribute('posterquality') || 'hqdefault';
-  }
-
-  set posterQuality(quality: string) {
-    this.setAttribute('posterquality', quality);
   }
 
   get params(): string {
