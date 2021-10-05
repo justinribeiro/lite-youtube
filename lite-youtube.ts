@@ -320,28 +320,23 @@ export class LiteYTEmbed extends HTMLElement {
    * Setup the Intersection Observer to load the iframe when scrolled into view
    */
   private initIntersectionObserver(): void {
-    if (
-      'IntersectionObserver' in window &&
-      'IntersectionObserverEntry' in window
-    ) {
-      const options = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0,
-      };
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0,
+    };
 
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && !this.isIframeLoaded) {
-            LiteYTEmbed.warmConnections();
-            this.addIframe(true);
-            observer.unobserve(this);
-          }
-        });
-      }, options);
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !this.isIframeLoaded) {
+          LiteYTEmbed.warmConnections();
+          this.addIframe(true);
+          observer.unobserve(this);
+        }
+      });
+    }, options);
 
-      observer.observe(this);
-    }
+    observer.observe(this);
   }
 
   /**
