@@ -31,7 +31,7 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   static get observedAttributes(): string[] {
-    return ['videoid'];
+    return ['videoid', 'playlistid'];
   }
 
   connectedCallback(): void {
@@ -48,6 +48,14 @@ export class LiteYTEmbed extends HTMLElement {
 
   set videoId(id: string) {
     this.setAttribute('videoid', id);
+  }
+
+  get playlistId(): string {
+    return encodeURIComponent(this.getAttribute('playlistid') || '');
+  }
+
+  set playlistId(id: string) {
+    this.setAttribute('playlistid', id);
   }
 
   get videoTitle(): string {
@@ -266,10 +274,16 @@ export class LiteYTEmbed extends HTMLElement {
       // Don't autoplay the intersection observer injection, it's weird
       const autoplay = isIntersectionObserver ? 0 : 1;
       const wantsNoCookie = this.noCookie ? '-nocookie' : '';
+      let embedTarget;
+      if (this.playlistId) {
+        embedTarget = `?listType=playlist&list=${this.playlistId}&`;
+      } else {
+        embedTarget = `${this.videoId}?`;
+      }
       const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube${wantsNoCookie}.com/embed/${this.videoId}?autoplay=${autoplay}&${this.params}"
+  src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}&${this.params}"
 ></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('lyt-activated');
