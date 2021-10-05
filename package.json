@@ -30,12 +30,41 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
+    "@open-wc/eslint-config": "^4.3.0",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
-    "eslint-config-prettier": "^6.10.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-html": "^6.0.0",
     "eslint-plugin-lit": "^1.2.0",
     "prettier": "^2.0.0",
-    "typescript": "^3.8.0"
+    "typescript": "^4.0.0"
+  },
+  "eslintConfig": {
+    "parser": "@typescript-eslint/parser",
+    "extends": [
+      "@open-wc/eslint-config",
+      "eslint-config-prettier"
+    ],
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error"
+      ],
+      "import/no-unresolved": "off",
+      "import/extensions": [
+        "error",
+        "always",
+        {
+          "ignorePackages": true
+        }
+      ]
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "arrowParens": "avoid"
   }
 }

@@ -16,7 +16,6 @@
  */
 export class LiteYTEmbed extends HTMLElement {
   shadowRoot!: ShadowRoot;
-  private iframeLoaded = false;
   private domRefFrame!: HTMLDivElement;
   private domRefImg!: {
     fallback: HTMLImageElement;
@@ -24,6 +23,8 @@ export class LiteYTEmbed extends HTMLElement {
     jpeg: HTMLSourceElement;
   };
   private domRefPlayButton!: HTMLButtonElement;
+  private static isPreconnected = false;
+  private isIframeLoaded = false;
 
   constructor() {
     super();
@@ -114,7 +115,7 @@ export class LiteYTEmbed extends HTMLElement {
    * Define our shadowDOM for the component
    */
   private setupDom(): void {
-    const shadowDom = this.attachShadow({mode: 'open'});
+    const shadowDom = this.attachShadow({ mode: 'open' });
     shadowDom.innerHTML = `
       <style>
         :host {
@@ -202,20 +203,13 @@ export class LiteYTEmbed extends HTMLElement {
         <button class="lty-playbtn"></button>
       </div>
     `;
-    this.domRefFrame = this.shadowRoot.querySelector<HTMLDivElement>('#frame')!;
+    this.domRefFrame = shadowDom.querySelector<HTMLDivElement>('#frame')!;
     this.domRefImg = {
-      fallback: this.shadowRoot.querySelector<HTMLImageElement>(
-        '#fallbackPlaceholder',
-      )!,
-      webp: this.shadowRoot.querySelector<HTMLSourceElement>(
-        '#webpPlaceholder',
-      )!,
-      jpeg: this.shadowRoot.querySelector<HTMLSourceElement>(
-        '#jpegPlaceholder',
-      )!,
+      fallback: shadowDom.querySelector('#fallbackPlaceholder')!,
+      webp: shadowDom.querySelector('#webpPlaceholder')!,
+      jpeg: shadowDom.querySelector('#jpegPlaceholder')!,
     };
-    this.domRefPlayButton =
-      this.shadowRoot.querySelector<HTMLButtonElement>('.lty-playbtn')!;
+    this.domRefPlayButton = shadowDom.querySelector('.lty-playbtn')!;
   }
 
   /**
@@ -226,7 +220,7 @@ export class LiteYTEmbed extends HTMLElement {
 
     this.domRefPlayButton.setAttribute(
       'aria-label',
-      `${this.videoPlay}: ${this.videoTitle}`,
+      `${this.videoPlay}: ${this.videoTitle}`
     );
     this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
 
@@ -244,7 +238,7 @@ export class LiteYTEmbed extends HTMLElement {
   attributeChangedCallback(
     name: string,
     oldVal: unknown,
-    newVal: unknown,
+    newVal: unknown
   ): void {
     switch (name) {
       case 'videoid': {
@@ -255,7 +249,7 @@ export class LiteYTEmbed extends HTMLElement {
           if (this.domRefFrame.classList.contains('lyt-activated')) {
             this.domRefFrame.classList.remove('lyt-activated');
             this.shadowRoot.querySelector('iframe')!.remove();
-            this.iframeLoaded = false;
+            this.isIframeLoaded = false;
           }
         }
         break;
@@ -270,7 +264,7 @@ export class LiteYTEmbed extends HTMLElement {
    * @param {boolean} isIntersectionObserver
    */
   private addIframe(isIntersectionObserver = false): void {
-    if (!this.iframeLoaded) {
+    if (!this.isIframeLoaded) {
       // Don't autoplay the intersection observer injection, it's weird
       const autoplay = isIntersectionObserver ? 0 : 1;
       const wantsNoCookie = this.noCookie ? '-nocookie' : '';
@@ -287,7 +281,7 @@ export class LiteYTEmbed extends HTMLElement {
 ></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('lyt-activated');
-      this.iframeLoaded = true;
+      this.isIframeLoaded = true;
       this.dispatchEvent(
         new CustomEvent('liteYoutubeIframeLoaded', {
           detail: {
@@ -295,7 +289,7 @@ export class LiteYTEmbed extends HTMLElement {
           },
           bubbles: true,
           cancelable: true,
-        }),
+        })
       );
     }
   }
@@ -314,11 +308,11 @@ export class LiteYTEmbed extends HTMLElement {
     this.domRefImg.fallback.src = posterUrlJpeg;
     this.domRefImg.fallback.setAttribute(
       'aria-label',
-      `${this.videoPlay}: ${this.videoTitle}`,
+      `${this.videoPlay}: ${this.videoTitle}`
     );
-    this.domRefImg.fallback.setAttribute(
+    this.domRefImg?.fallback?.setAttribute(
       'alt',
-      `${this.videoPlay}: ${this.videoTitle}`,
+      `${this.videoPlay}: ${this.videoTitle}`
     );
   }
 
@@ -338,7 +332,7 @@ export class LiteYTEmbed extends HTMLElement {
 
       const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
-          if (entry.isIntersecting && !this.iframeLoaded) {
+          if (entry.isIntersecting && !this.isIframeLoaded) {
             LiteYTEmbed.warmConnections();
             this.addIframe(true);
             observer.unobserve(this);
@@ -350,13 +344,11 @@ export class LiteYTEmbed extends HTMLElement {
     }
   }
 
-  private static preconnected = false;
-
   /**
    * Add a <link rel={preload | preconnect} ...> to the head
-   * @param {*} kind
-   * @param {*} url
-   * @param {*} as
+   * @param {string} kind
+   * @param {string} url
+   * @param {string} as
    */
   private static addPrefetch(kind: string, url: string, as?: string): void {
     const linkElem = document.createElement('link');
@@ -370,7 +362,7 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   /**
-   * Begin preconnecting to warm up the iframe load Since the embed's netwok
+   * Begin preconnecting to warm up the iframe load Since the embed's network
    * requests load within its iframe, preload/prefetch'ing them outside the
    * iframe will only cause double-downloads. So, the best we can do is warm up
    * a few connections to origins that are in the critical path.
@@ -380,7 +372,7 @@ export class LiteYTEmbed extends HTMLElement {
    * Isolation and split caches adding serious complexity.
    */
   private static warmConnections(): void {
-    if (LiteYTEmbed.preconnected) return;
+    if (LiteYTEmbed.isPreconnected) return;
     // Host that YT uses to serve JS needed by player, per amp-youtube
     LiteYTEmbed.addPrefetch('preconnect', 'https://s.ytimg.com');
 
@@ -395,10 +387,10 @@ export class LiteYTEmbed extends HTMLElement {
     // Could verify with domain-specific throttling.
     LiteYTEmbed.addPrefetch(
       'preconnect',
-      'https://googleads.g.doubleclick.net',
+      'https://googleads.g.doubleclick.net'
     );
     LiteYTEmbed.addPrefetch('preconnect', 'https://static.doubleclick.net');
-    LiteYTEmbed.preconnected = true;
+    LiteYTEmbed.isPreconnected = true;
   }
 }
 // Register custom element
