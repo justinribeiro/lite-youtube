@@ -124,3 +124,12 @@ flexibility.
 | `nocookie`     | Use youtube-nocookie.com as iframe embed uri | `false` |
 | `autoload`     | Use Intersection Observer to load iframe when scrolled into view | `false` |
 | `params`       | Set YouTube query parameters                                     | ``      |
+
+## Events
+
+The web component allows certain attributes to be give a little additional
+flexibility.
+
+| Event Name     | Description                                                      | Returns |
+| -------------- | ---------------------------------------------------------------- | ------- |
+| `liteYoutubeIframeLoaded` | When the iframe is loaded, allowing us of JS API  | `detail: { videoId: this.videoId }` |
