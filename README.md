@@ -117,6 +117,7 @@ flexibility.
 | Name           | Description                                                      | Default |
 | -------------- | ---------------------------------------------------------------- | ------- |
 | `videoid`      | The YouTube videoid                                              | ``      |
+| `playlistid`   | The YouTube playlistid; requires a videoid for thumbnail         | ``      |
 | `videotitle`   | The title of the video                                           | `Video` |
 | `videoplay`    | The title of the play button (for translation)                   | `Play`  |
 | `videoStartAt` | Set the point at which the video should start, in seconds        | `0`     |
