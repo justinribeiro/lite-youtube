@@ -241,7 +241,8 @@ export class LiteYTEmbed extends HTMLElement {
     newVal: unknown
   ): void {
     switch (name) {
-      case 'videoid': {
+      case 'videoid':
+      case 'playlistid': {
         if (oldVal !== newVal) {
           this.setupComponent();
 
