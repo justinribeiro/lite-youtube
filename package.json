@@ -7,7 +7,10 @@
     "url": "git@github.com:justinribeiro/lite-youtube.git"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "yarn build && yarn web-dev-server --open demo/ --node-resolve",
+    "start:watch": "concurrently --raw \"yarn tsc --watch --preserveWatchOutput\" \"yarn wds --watch --open /demo --node-resolve\"",
     "lint": "npm run lint:eslint && npm run lint:prettier",
     "lint:eslint": "eslint *.ts --ignore-path .gitignore",
     "lint:prettier": "prettier --check *.ts --ignore-path .gitignore",
@@ -28,9 +31,11 @@
     "youtube"
   ],
   "devDependencies": {
+    "@open-wc/eslint-config": "^4.3.0",
     "@typescript-eslint/eslint-plugin": "^2.29.0",
     "@typescript-eslint/parser": "^2.29.0",
-    "@open-wc/eslint-config": "^4.3.0",
+    "@web/dev-server": "^0.1.24",
+    "concurrently": "^6.3.0",
     "eslint": "^6.8.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.3.0",

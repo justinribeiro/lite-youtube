@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
+    />
+    <title>lite-youtube demo</title>
+    <script type="module" src="../lite-youtube.js"></script>
+    <style>
+      * {
+        box-sizing: content-box;
+      }
+      body {
+        max-width: 800px;
+        margin: auto;
+      }
+      pre {
+        width: 100%;
+        padding: 1em;
+        overflow-x: scroll;
+        background-clip: z;
+        background-color: #eee;
+      }
+      .styleIt {
+        width: 400px;
+      }
+      #bigBlock {
+        height: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>JS API Testing</h3>
+    <pre>
+
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; params=&quot;controls=0&amp;enablejsapi=1&quot;&gt;&lt;/lite-youtube&gt;
+    </pre>
+    <lite-youtube
+      id="test-jsapi"
+      videoid="guJLfqTFfIw"
+      params="controls=0&enablejsapi=1"
+    ></lite-youtube>
+
+    <script type="text/javascript">
+      // From https://developers.google.com/youtube/iframe_api_reference#Examples
+      const tag = document.createElement('script');
+      tag.id = 'iframe-demo';
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      let player;
+
+      function onPlayerReady(event) {
+        document.querySelector('#test-jsapi').style.borderColor = '#FF6D00';
+        document.querySelector('#test-jsapi').style.borderWidth = '5px';
+        document.querySelector('#test-jsapi').style.borderStyle = 'solid';
+      }
+
+      function changeBorderColor(playerStatus) {
+        let color;
+        if (playerStatus == -1) {
+          color = "#37474F"; // unstarted = gray
+        } else if (playerStatus == 0) {
+          color = "#FFFF00"; // ended = yellow
+        } else if (playerStatus == 1) {
+          color = "#33691E"; // playing = green
+        } else if (playerStatus == 2) {
+          color = "#DD2C00"; // paused = red
+        } else if (playerStatus == 3) {
+          color = "#AA00FF"; // buffering = purple
+        } else if (playerStatus == 5) {
+          color = "#FF6DOO"; // video cued = orange
+        }
+        if (color) {
+          document.querySelector('#test-jsapi').style.borderColor = color;
+        }
+      }
+      function onPlayerStateChange(event) {
+        changeBorderColor(event.data);
+      }
+
+      document.addEventListener('liteYoutubeIframeLoaded', () => {
+        player = new YT.Player(document.querySelector('#test-jsapi').shadowRoot.querySelector('iframe'), {
+            events: {
+              'onReady': onPlayerReady,
+              'onStateChange': onPlayerStateChange
+            }
+        });
+      }, false);
+    </script>
+  </body>
+</html>
