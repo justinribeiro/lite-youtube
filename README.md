@@ -130,8 +130,7 @@ flexibility.
 
 ## Events
 
-The web component allows certain attributes to be give a little additional
-flexibility.
+The web component fires events to give the ability understand important lifecycle.
 
 | Event Name     | Description                                                      | Returns |
 | -------------- | ---------------------------------------------------------------- | ------- |
