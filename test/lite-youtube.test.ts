@@ -97,6 +97,39 @@ describe('<lite-youtube>', () => {
     expect(fallback?.src).to.be.equal(checkStringOne);
   });
 
+  it('posterLoading attr default', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoid="guJLfqTFfIw"
+        posterQuality="mqdefault"
+      ></lite-youtube>`
+    );
+    expect(el.posterLoading).to.be.equal('lazy');
+
+    const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
+      '#fallbackPlaceholder'
+    );
+
+    expect(fallback?.loading).to.be.equal('lazy');
+  });
+
+  it('posterLoading attr set should stick to img', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoid="guJLfqTFfIw"
+        posterQuality="mqdefault"
+        posterloading="eager"
+      ></lite-youtube>`
+    );
+    expect(el.posterLoading).to.be.equal('eager');
+
+    const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
+      '#fallbackPlaceholder'
+    );
+
+    expect(fallback?.loading).to.be.equal('eager');
+  });
+
   it('is valid A11y via aXe', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     await expect(el).shadowDom.to.be.accessible();

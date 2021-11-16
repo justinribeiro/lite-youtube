@@ -95,6 +95,10 @@ export class LiteYTEmbed extends HTMLElement {
     return this.getAttribute('posterquality') || 'hqdefault';
   }
 
+  get posterLoading(): string {
+    return this.getAttribute('posterloading') || 'lazy';
+  }
+
   get params(): string {
     return `start=${this.videoStartAt}&${this.getAttribute('params')}`;
   }
@@ -292,6 +296,7 @@ export class LiteYTEmbed extends HTMLElement {
 
     const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/${this.posterQuality}.webp`;
     const posterUrlJpeg = `https://i.ytimg.com/vi/${this.videoId}/${this.posterQuality}.jpg`;
+    this.domRefImg.fallback.loading = this.posterLoading;
     this.domRefImg.webp.srcset = posterUrlWebp;
     this.domRefImg.jpeg.srcset = posterUrlJpeg;
     this.domRefImg.fallback.src = posterUrlJpeg;
