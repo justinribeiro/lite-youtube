@@ -17,6 +17,9 @@
 - Set the `start` attribute to start at a particular place in a video
 - You can set `autoload` to use Intersection Observer to load the iframe when scrolled into view.
 - Loads placeholder image as WebP with a Jpeg fallback
+- _new in v1.1_: Adds `nocookie` attr for use with use youtube-nocookie.com as iframe embed uri
+- _new in v1.2_: Adds `playlistid` for playlist loading interface support
+- _new in v1.3_: Adds `loading=lazy` to image placeholder for more perf with `posterloading` attr if you'd like to use eager
 
 ## Install
 
@@ -42,7 +45,7 @@ import '@justinribeiro/lite-youtube';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.2.0/lite-youtube.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.3.0/lite-youtube.js"></script>
 ```
 
 ## Basic Usage
