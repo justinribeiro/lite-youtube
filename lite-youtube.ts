@@ -116,6 +116,9 @@ export class LiteYTEmbed extends HTMLElement {
           position: relative;
           width: 100%;
           padding-bottom: calc(100% / (16 / 9));
+          --lyt-animation: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+          --lyt-play-btn-default: #212121;
+          --lyt-play-btn-hover: #f00;
         }
 
         #frame, #fallbackPlaceholder, iframe {
@@ -138,39 +141,38 @@ export class LiteYTEmbed extends HTMLElement {
           display: block;
           position: absolute;
           top: 0;
-          background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAADGCAYAAAAT+OqFAAAAdklEQVQoz42QQQ7AIAgEF/T/D+kbq/RWAlnQyyazA4aoAB4FsBSA/bFjuF1EOL7VbrIrBuusmrt4ZZORfb6ehbWdnRHEIiITaEUKa5EJqUakRSaEYBJSCY2dEstQY7AuxahwXFrvZmWl2rh4JZ07z9dLtesfNj5q0FU3A5ObbwAAAABJRU5ErkJggg==);
-          background-position: top;
-          background-repeat: repeat-x;
+          background-image: linear-gradient(180deg, #111 -20%, transparent 90%);
           height: 60px;
-          padding-bottom: 50px;
           width: 100%;
-          transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+          transition: var(--lyt-animation);
           z-index: 1;
         }
-        /* play button */
-        .lty-playbtn {
+
+        #playButton {
           width: 70px;
           height: 46px;
-          background-color: #212121;
+          background-color: var(--lyt-play-btn-hover);
           z-index: 1;
           opacity: 0.8;
-          border-radius: 14%; /* TODO: Consider replacing this with YT's actual svg. Eh. */
-          transition: all 0.2s cubic-bezier(0, 0, 0.2, 1);
+          border-radius: 14%;
+          transition: var(--lyt-animation);
           border: 0;
         }
-        #frame:hover .lty-playbtn {
-          background-color: #f00;
+
+        #frame:hover > #playButton {
+          background-color: var(--lyt-play-btn-hover);
           opacity: 1;
         }
-        /* play button triangle */
-        .lty-playbtn:before {
+
+        #playButton:before {
           content: '';
           border-style: solid;
           border-width: 11px 0 11px 19px;
           border-color: transparent transparent transparent #fff;
         }
-        .lty-playbtn,
-        .lty-playbtn:before {
+
+        #playButton,
+        #playButton:before {
           position: absolute;
           top: 50%;
           left: 50%;
@@ -178,12 +180,12 @@ export class LiteYTEmbed extends HTMLElement {
         }
 
         /* Post-click styles */
-        .lyt-activated {
+        .activated {
           cursor: unset;
         }
 
-        #frame.lyt-activated::before,
-        .lyt-activated .lty-playbtn {
+        #frame.activated::before,
+        #frame.activated > #playButton {
           display: none;
         }
       </style>
@@ -193,7 +195,7 @@ export class LiteYTEmbed extends HTMLElement {
           <source id="jpegPlaceholder" type="image/jpeg">
           <img id="fallbackPlaceholder" referrerpolicy="origin">
         </picture>
-        <button class="lty-playbtn"></button>
+        <button id="playButton"></button>
       </div>
     `;
     this.domRefFrame = shadowDom.querySelector<HTMLDivElement>('#frame')!;
@@ -202,7 +204,7 @@ export class LiteYTEmbed extends HTMLElement {
       webp: shadowDom.querySelector('#webpPlaceholder')!,
       jpeg: shadowDom.querySelector('#jpegPlaceholder')!,
     };
-    this.domRefPlayButton = shadowDom.querySelector('.lty-playbtn')!;
+    this.domRefPlayButton = shadowDom.querySelector('#playButton')!;
   }
 
   /**
@@ -240,8 +242,8 @@ export class LiteYTEmbed extends HTMLElement {
           this.setupComponent();
 
           // if we have a previous iframe, remove it and the activated class
-          if (this.domRefFrame.classList.contains('lyt-activated')) {
-            this.domRefFrame.classList.remove('lyt-activated');
+          if (this.domRefFrame.classList.contains('activated')) {
+            this.domRefFrame.classList.remove('activated');
             this.shadowRoot.querySelector('iframe')!.remove();
             this.isIframeLoaded = false;
           }
@@ -274,7 +276,7 @@ export class LiteYTEmbed extends HTMLElement {
   src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}&${this.params}"
 ></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
-      this.domRefFrame.classList.add('lyt-activated');
+      this.domRefFrame.classList.add('activated');
       this.isIframeLoaded = true;
       this.dispatchEvent(
         new CustomEvent('liteYoutubeIframeLoaded', {

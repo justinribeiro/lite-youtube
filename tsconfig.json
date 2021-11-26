@@ -15,7 +15,8 @@
     "inlineSources": true,
     "rootDir": "./",
     "declaration": true,
-    "incremental": false
+    "incremental": false,
+    "removeComments": true
   },
   "include": ["**/*.ts"],
   "exclude": ["demo", "tools"]
