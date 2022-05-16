@@ -134,8 +134,8 @@ flexibility.
 
 ## Events
 
-The web component fires events to give the ability understand important lifecycle.
+The web component fires events to give the ability to understand important points in time of its life cycle.
 
 | Event Name     | Description                                                      | Returns |
 | -------------- | ---------------------------------------------------------------- | ------- |
-| `liteYoutubeIframeLoaded` | When the iframe is loaded, allowing us of JS API  | `detail: { videoId: this.videoId }` |
+| `liteYoutubeIframeLoaded` | When the iframe is loaded, allowing use of the JS API  | `detail: { videoId: this.videoId }` |
