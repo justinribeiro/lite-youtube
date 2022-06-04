@@ -14,6 +14,7 @@ async function loadYoutubeAPI(): Promise<typeof window.YT> {
     }
     const tag = document.createElement('script');
     tag.src = 'https://www.youtube.com/iframe_api';
+    tag.type = 'text/javascript';
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
     window.onYouTubeIframeAPIReady = function () {
