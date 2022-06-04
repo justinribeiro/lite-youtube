@@ -135,5 +135,18 @@
       videoid="VLrYOji75Vc"
       playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9"
     ></lite-youtube>
+
+
+    <h3>YouTube Events</h3>
+    <pre>
+
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; events&gt;&lt;/lite-youtube&gt;
+    </pre>
+    <lite-youtube videoid="guJLfqTFfIw" events
+                  onplay="console.log('play')"
+                  onpause="console.log('pause')"
+                  onended="console.log('ended')"
+                  onratechange="console.log('playback rate :', this.playbackRate)"
+    ></lite-youtube>
   </body>
 </html>

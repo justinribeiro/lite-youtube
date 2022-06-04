@@ -1,3 +1,31 @@
+declare global {
+  interface Window {
+    YT?: {
+      Player: YT.Player;
+    };
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+/**
+ * Load Youtube API to listen for events
+ */
+async function loadYoutubeAPI(): Promise<typeof window.YT> {
+  return new Promise(resolve => {
+    if (window.YT) {
+      resolve(window.YT);
+    }
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode!.insertBefore(tag, firstScriptTag);
+    window.onYouTubeIframeAPIReady = function () {
+      window.onYouTubeIframeAPIReady = undefined;
+      resolve(window.YT);
+    };
+  });
+}
+
 /**
  *
  * The shadowDom / Intersection Observer version of Paul's concept:
@@ -16,14 +44,21 @@
  */
 export class LiteYTEmbed extends HTMLElement {
   shadowRoot!: ShadowRoot;
+
+  private player?: YT.Player;
+
   private domRefFrame!: HTMLDivElement;
+
   private domRefImg!: {
     fallback: HTMLImageElement;
     webp: HTMLSourceElement;
     jpeg: HTMLSourceElement;
   };
+
   private domRefPlayButton!: HTMLButtonElement;
+
   private static isPreconnected = false;
+
   private isIframeLoaded = false;
 
   constructor() {
@@ -43,6 +78,10 @@ export class LiteYTEmbed extends HTMLElement {
     this.addEventListener('click', () => this.addIframe());
   }
 
+  load(): void {
+    this.addIframe(true)
+  }
+
   get videoId(): string {
     return encodeURIComponent(this.getAttribute('videoid') || '');
   }
@@ -57,6 +96,50 @@ export class LiteYTEmbed extends HTMLElement {
 
   set playlistId(id: string) {
     this.setAttribute('playlistid', id);
+  }
+
+  get playbackRate(): number {
+    return this.player?.getPlaybackRate() ?? 1;
+  }
+
+  set playbackRate(rate: number) {
+    this.player?.setPlaybackRate(rate);
+  }
+
+  get duration(): number {
+    return this.player?.getDuration() ?? NaN;
+  }
+
+  get muted(): boolean {
+    return this.player?.isMuted() || false;
+  }
+
+  set muted(muted: boolean) {
+    muted ? this.player?.mute() : this.player?.unMute();
+  }
+
+  get ended(): boolean {
+    return this.player?.getPlayerState() === YT.PlayerState.ENDED;
+  }
+
+  get paused(): boolean {
+    return this.player?.getPlayerState() === YT.PlayerState.PAUSED;
+  }
+
+  get volume(): number {
+    return (this.player?.getVolume() ?? 0) / 100;
+  }
+
+  set volume(volume: number) {
+    this.player?.setVolume(volume * 100);
+  }
+
+  get currentTime(): number {
+    return this.player?.getCurrentTime() ?? 0;
+  }
+
+  set currentTime(time: number) {
+    this.player?.seekTo(time, true);
   }
 
   get videoTitle(): string {
@@ -91,6 +174,10 @@ export class LiteYTEmbed extends HTMLElement {
     return this.hasAttribute('nocookie');
   }
 
+  get hasEvents(): boolean {
+    return this.hasAttribute('events');
+  }
+
   get posterQuality(): string {
     return this.getAttribute('posterquality') || 'hqdefault';
   }
@@ -101,6 +188,18 @@ export class LiteYTEmbed extends HTMLElement {
 
   get params(): string {
     return `start=${this.videoStartAt}&${this.getAttribute('params')}`;
+  }
+
+  public play(): void {
+    // The player is not already loaded
+    if (this.hasEvents && !this.player) {
+      this.addIframe()
+    }
+    this.player?.playVideo();
+  }
+
+  public pause(): void {
+    this.player?.pauseVideo();
   }
 
   /**
@@ -259,7 +358,7 @@ export class LiteYTEmbed extends HTMLElement {
    * Inject the iframe into the component body
    * @param {boolean} isIntersectionObserver
    */
-  private addIframe(isIntersectionObserver = false): void {
+  private async addIframe(isIntersectionObserver = false): Promise<void> {
     if (!this.isIframeLoaded) {
       // Don't autoplay the intersection observer injection, it's weird
       const autoplay = isIntersectionObserver ? 0 : 1;
@@ -270,12 +369,29 @@ export class LiteYTEmbed extends HTMLElement {
       } else {
         embedTarget = `${this.videoId}?`;
       }
-      const iframeHTML = `
+      if (!this.hasEvents) {
+        const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
   src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}&${this.params}"
 ></iframe>`;
-      this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
+        this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
+      } else {
+        const YT = await loadYoutubeAPI();
+        this.player = new YT.Player(this.domRefFrame, {
+          videoId: this.videoId,
+          host: `https://www.youtube${wantsNoCookie}.com`,
+          playerVars: {
+            autoplay,
+          },
+          events: {
+            onStateChange: this.onYoutubeStateChange.bind(this),
+            onPlaybackRateChange: () =>
+              this.dispatchEvent(new Event('ratechange')),
+            onReady: () => this.dispatchEvent(new Event('loadedmetadata')),
+          },
+        });
+      }
       this.domRefFrame.classList.add('activated');
       this.isIframeLoaded = true;
       this.dispatchEvent(
@@ -287,6 +403,20 @@ export class LiteYTEmbed extends HTMLElement {
           cancelable: true,
         })
       );
+    }
+  }
+
+  private onYoutubeStateChange(event: YT.OnStateChangeEvent): void {
+    switch (event.data) {
+      case YT.PlayerState.PLAYING:
+        this.dispatchEvent(new Event('play'));
+        break;
+      case YT.PlayerState.PAUSED:
+        this.dispatchEvent(new Event('pause'));
+        break;
+      case YT.PlayerState.ENDED:
+        this.dispatchEvent(new Event('ended'));
+        break;
     }
   }
 
