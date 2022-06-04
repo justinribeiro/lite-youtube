@@ -1,8 +1,5 @@
 declare global {
   interface Window {
-    YT?: {
-      Player: YT.Player;
-    };
     onYouTubeIframeAPIReady?: () => void;
   }
 }
@@ -46,15 +43,12 @@ export class LiteYTEmbed extends HTMLElement {
   shadowRoot!: ShadowRoot;
 
   private player?: YT.Player;
-
   private domRefFrame!: HTMLDivElement;
-
   private domRefImg!: {
     fallback: HTMLImageElement;
     webp: HTMLSourceElement;
     jpeg: HTMLSourceElement;
   };
-
   private domRefPlayButton!: HTMLButtonElement;
 
   private static isPreconnected = false;

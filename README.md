@@ -119,19 +119,19 @@ Use any [YouTube Embedded Players and Player Parameters](https://developers.goog
 The web component allows certain attributes to be give a little additional
 flexibility.
 
-| Name            | Description                                                                  | Default       |
-|-----------------|------------------------------------------------------------------------------|---------------|
-| `videoid`       | The YouTube videoid                                                          | ``            |
-| `playlistid`    | The YouTube playlistid; requires a videoid for thumbnail                     | ``            |
-| `videotitle`    | The title of the video                                                       | `Video`       |
-| `videoplay`     | The title of the play button (for translation)                               | `Play`        |
-| `videoStartAt`  | Set the point at which the video should start, in seconds                    | `0`           |
-| `posterquality` | Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault) | `hqdefault`  |
-| `posterloading` | Set img lazy load attr `loading` for poster image                            | `lazy`        |
-| `nocookie`      | Use youtube-nocookie.com as iframe embed uri                                 | `false`       |
-| `autoload`      | Use Intersection Observer to load iframe when scrolled into view             | `false`       |
-| `params`        | Set YouTube query parameters                                                 | ``            |
-| `events`        | Emit events (similar to `<video>` events) using Youtube Iframe api           | ``            |
+| Name            | Description                                                                    | Default       |
+|-----------------|--------------------------------------------------------------------------------|---------------|
+| `videoid`       | The YouTube videoid                                                            | ``            |
+| `playlistid`    | The YouTube playlistid; requires a videoid for thumbnail                       | ``            |
+| `videotitle`    | The title of the video                                                         | `Video`       |
+| `videoplay`     | The title of the play button (for translation)                                 | `Play`        |
+| `videoStartAt`  | Set the point at which the video should start, in seconds                      | `0`           |
+| `posterquality` | Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault)  | `hqdefault`  |
+| `posterloading` | Set img lazy load attr `loading` for poster image                              | `lazy`        |
+| `nocookie`      | Use youtube-nocookie.com as iframe embed uri                                   | `false`       |
+| `autoload`      | Use Intersection Observer to load iframe when scrolled into view               | `false`       |
+| `params`        | Set YouTube query parameters                                                   | ``            |
+| `events`        | Emit events (similar to `<video>` events) using Youtube Iframe api             | ``            |
 
 
 ## Events
