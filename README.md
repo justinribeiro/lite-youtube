@@ -126,7 +126,7 @@ flexibility.
 | `videotitle`    | The title of the video                                                         | `Video`       |
 | `videoplay`     | The title of the play button (for translation)                                 | `Play`        |
 | `videoStartAt`  | Set the point at which the video should start, in seconds                      | `0`           |
-| `posterquality` | Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault)  | `hqdefault`  |
+| `posterquality` | Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault)  | `hqdefault`   |
 | `posterloading` | Set img lazy load attr `loading` for poster image                              | `lazy`        |
 | `nocookie`      | Use youtube-nocookie.com as iframe embed uri                                   | `false`       |
 | `autoload`      | Use Intersection Observer to load iframe when scrolled into view               | `false`       |
