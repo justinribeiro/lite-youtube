@@ -193,7 +193,7 @@ export class LiteYTEmbed extends HTMLElement {
         <picture>
           <source id="webpPlaceholder" type="image/webp">
           <source id="jpegPlaceholder" type="image/jpeg">
-          <img id="fallbackPlaceholder" referrerpolicy="origin">
+          <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy">
         </picture>
         <button id="playButton"></button>
       </div>
