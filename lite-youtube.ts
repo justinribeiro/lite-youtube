@@ -95,8 +95,11 @@ export class LiteYTEmbed extends HTMLElement {
     return this.getAttribute('posterquality') || 'hqdefault';
   }
 
-  get posterLoading(): string {
-    return this.getAttribute('posterloading') || 'lazy';
+  get posterLoading(): HTMLImageElement['loading'] {
+    return (
+      (this.getAttribute('posterloading') as HTMLImageElement['loading']) ||
+      'lazy'
+    );
   }
 
   get params(): string {
