@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
+    />
+    <title>lite-youtube demo</title>
+    <script type="module" src="../lite-youtube.js"></script>
+    <style>
+      * {
+        box-sizing: content-box;
+      }
+      body {
+        max-width: 800px;
+        margin: auto;
+      }
+      pre {
+        width: 100%;
+        padding: 1em;
+        overflow-x: scroll;
+        background-clip: z;
+        background-color: #eee;
+      }
+      #test-jsapi {
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <script src="https://www.youtube.com/iframe_api" id="iframe-demo"></script>
+  <body>
+    <h3>JS API Testing - Background play</h3>
+    <pre>
+
+&lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; params=&quot;controls=0&amp;enablejsapi=1&quot;&gt;&lt;/lite-youtube&gt;
+    </pre>
+    <lite-youtube
+      id="test-jsapi"
+      videoid="WhY7uyc56ms"
+      autoload
+      params="autoplay=1&mute=1&loop=1&controls=0&modestbranding=1&playsinline=1&rel=0&enablejsapi=1"
+    ></lite-youtube>
+
+    <script type="text/javascript">
+      let player;
+
+      function setupYT() {
+        player = new YT.Player(
+          document
+            .querySelector('#test-jsapi')
+            .shadowRoot.querySelector('iframe'),
+          {
+            events: {
+              onReady: onPlayerReady,
+            },
+          }
+        );
+      }
+
+      function onPlayerReady() {
+        player.playVideo();
+      }
+
+      document.addEventListener('liteYoutubeIframeLoaded', () => {
+        try {
+          setupYT();
+        } catch(e) {
+          setTimeout(setupYT, 100);
+        }
+      }, false);
+    </script>
+  </body>
+</html>
