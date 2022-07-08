@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/@justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/@justinribeiro%2Flite-youtube) [![min+gzip](https://badgen.net/bundlephobia/minzip/@justinribeiro/lite-youtube)](https://bundlephobia.com/result?p=@justinribeiro/lite-youtube) [![](https://data.jsdelivr.com/v1/package/npm/@justinribeiro/lite-youtube/badge)](https://www.jsdelivr.com/package/npm/@justinribeiro/lite-youtube)
+[![npm version](https://badge.fury.io/js/@justinribeiro%2Flite-youtube.svg)](https://badge.fury.io/js/@justinribeiro%2Flite-youtube) ![min+gzip](https://img.shields.io/badge/min%2Bgzip-2.2kb-blue) ![min+br](https://img.shields.io/badge/min%2Bbr-1.7kb-blue) [![](https://data.jsdelivr.com/v1/package/npm/@justinribeiro/lite-youtube/badge)](https://www.jsdelivr.com/package/npm/@justinribeiro/lite-youtube)
 
 ![Statements](https://img.shields.io/badge/statements-97.7%25-brightgreen.svg?style=flat) ![Branches](https://img.shields.io/badge/branches-86.66%25-yellow.svg?style=flat) ![Functions](https://img.shields.io/badge/functions-88.46%25-yellow.svg?style=flat) ![Lines](https://img.shields.io/badge/lines-97.7%25-brightgreen.svg?style=flat)
 
