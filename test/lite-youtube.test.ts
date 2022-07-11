@@ -5,7 +5,7 @@ import { setViewport } from '@web/test-runner-commands';
 import { LiteYTEmbed } from '../lite-youtube.js';
 import '../lite-youtube.js';
 
-const baseTemplate = html`<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>`;
+const baseTemplate = html`<lite-youtube videoTitle="Test Me" videoid="guJLfqTFfIw"></lite-youtube>`;
 
 describe('<lite-youtube>', () => {
   it('attr sets the videoid', async () => {
@@ -17,6 +17,20 @@ describe('<lite-youtube>', () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     el.videoId = 'tests';
     expect(el.videoId).to.equal('tests');
+  });
+
+  it('videoTitle set/get', async () => {
+    const el = await fixture<LiteYTEmbed>(baseTemplate);
+    expect(el.videoTitle).to.equal('Test Me');
+    el.videoTitle = 'Test Me Again';
+    expect(el.videoTitle).to.equal('Test Me Again');
+  });
+
+  it('videoPlay set/get', async () => {
+    const el = await fixture<LiteYTEmbed>(baseTemplate);
+    expect(el.videoPlay).to.equal('Play');
+    el.videoPlay = 'Run';
+    expect(el.videoPlay).to.equal('Run');
   });
 
   it('clicking button should load iframe', async () => {
@@ -64,7 +78,7 @@ describe('<lite-youtube>', () => {
     );
     // this is a cheeky test by counting the test runner + the warm injector
     // TODO write a better observer
-    expect(document.head.querySelectorAll('link').length).to.be.equal(10);
+    expect(document.head.querySelectorAll('link').length).to.be.equal(12);
   });
 
   it('nocookie attr should change iframe url target', async () => {
@@ -128,6 +142,28 @@ describe('<lite-youtube>', () => {
     );
 
     expect(fallback?.loading).to.be.equal('eager');
+  });
+
+  it('YouTube Short desktop check', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoid="guJLfqTFfIw"
+        short
+      ></lite-youtube>`
+    );
+    expect(el['isYouTubeShort']()).to.be.equal(false);
+  });
+
+  it('YouTube Short mobile check', async () => {
+    setViewport({ width: 360, height: 640 });
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoid="guJLfqTFfIw"
+        short
+      ></lite-youtube>`
+    );
+    el.click();
+    expect(el['isYouTubeShort']()).to.be.equal(true);
   });
 
   it('is valid A11y via aXe', async () => {

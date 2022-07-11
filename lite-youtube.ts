@@ -75,12 +75,8 @@ export class LiteYTEmbed extends HTMLElement {
     this.setAttribute('videoPlay', name);
   }
 
-  get videoStartAt(): number {
-    return Number(this.getAttribute('videoStartAt') || '0');
-  }
-
-  set videoStartAt(time: number) {
-    this.setAttribute('videoStartAt', String(time));
+  get videoStartAt(): string {
+    return this.getAttribute('videoStartAt') || '0';
   }
 
   get autoLoad(): boolean {
@@ -106,6 +102,10 @@ export class LiteYTEmbed extends HTMLElement {
     return `start=${this.videoStartAt}&${this.getAttribute('params')}`;
   }
 
+  set params(opts: string) {
+    this.setAttribute('params', opts);
+  }
+
   /**
    * Define our shadowDOM for the component
    */
@@ -122,6 +122,12 @@ export class LiteYTEmbed extends HTMLElement {
           --lyt-animation: all 0.2s cubic-bezier(0, 0, 0.2, 1);
           --lyt-play-btn-default: #212121;
           --lyt-play-btn-hover: #f00;
+        }
+
+        @media (max-width: 40em) {
+          :host([short]) {
+            padding-bottom: calc(100% / (9 / 16));
+          }
         }
 
         #frame, #fallbackPlaceholder, iframe {
@@ -223,7 +229,7 @@ export class LiteYTEmbed extends HTMLElement {
     );
     this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
 
-    if (this.autoLoad) {
+    if (this.autoLoad || this.isYouTubeShort()) {
       this.initIntersectionObserver();
     }
   }
@@ -241,7 +247,9 @@ export class LiteYTEmbed extends HTMLElement {
   ): void {
     switch (name) {
       case 'videoid':
-      case 'playlistid': {
+      case 'playlistid':
+      case 'videoTitle':
+      case 'videoPlay': {
         if (oldVal !== newVal) {
           this.setupComponent();
 
@@ -266,7 +274,7 @@ export class LiteYTEmbed extends HTMLElement {
   private addIframe(isIntersectionObserver = false): void {
     if (!this.isIframeLoaded) {
       // Don't autoplay the intersection observer injection, it's weird
-      const autoplay = isIntersectionObserver ? 0 : 1;
+      let autoplay = isIntersectionObserver ? 0 : 1;
       const wantsNoCookie = this.noCookie ? '-nocookie' : '';
       let embedTarget;
       if (this.playlistId) {
@@ -274,6 +282,14 @@ export class LiteYTEmbed extends HTMLElement {
       } else {
         embedTarget = `${this.videoId}?`;
       }
+
+      // Oh wait, you're a YouTube short, so let's try to make you more workable
+      if (this.isYouTubeShort()) {
+        this.params =
+          'loop=1&mute=1&modestbranding=1&playsinline=1&rel=0&enablejsapi=1';
+        autoplay = 1;
+      }
+
       const iframeHTML = `
 <iframe frameborder="0"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
@@ -282,6 +298,7 @@ export class LiteYTEmbed extends HTMLElement {
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('activated');
       this.isIframeLoaded = true;
+      this.attemptShortAutoPlay();
       this.dispatchEvent(
         new CustomEvent('liteYoutubeIframeLoaded', {
           detail: {
@@ -341,18 +358,52 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   /**
+   * This is a terrible hack to attempt to get YouTube Short-like autoplay on
+   * mobile viewports. It's this way because:
+   * 1. YouTube's Iframe embed does not offer determinism when loading
+   * 2. Attempting to use onYouTubeIframeAPIReady() does not work in 99% of
+   *    cases
+   * 3. You can _technically_ load the Frame API library and do more advanced
+   *    things, but I don't want to burn the thread of the wire with its
+   *    shenanigans since this an edge case.
+   * @private
+   */
+  private attemptShortAutoPlay() {
+    if (this.isYouTubeShort()) {
+      setTimeout(() => {
+        this.shadowRoot
+          .querySelector('iframe')
+          ?.contentWindow?.postMessage(
+            '{"event":"command","func":"' + 'playVideo' + '","args":""}',
+            '*'
+          );
+        // for youtube video recording demo
+      }, 2000);
+    }
+  }
+
+  /**
+   * A hacky attr check and viewport peek to see if we're going to try to enable
+   * a more friendly YouTube Short style loading
+   * @returns boolean
+   */
+  private isYouTubeShort(): boolean {
+    return (
+      this.getAttribute('short') === '' &&
+      window.matchMedia('(max-width: 40em)').matches
+    );
+  }
+
+  /**
    * Add a <link rel={preload | preconnect} ...> to the head
    * @param {string} kind
    * @param {string} url
    * @param {string} as
    */
-  private static addPrefetch(kind: string, url: string, as?: string): void {
+  private static addPrefetch(kind: string, url: string): void {
     const linkElem = document.createElement('link');
     linkElem.rel = kind;
     linkElem.href = url;
-    if (as) {
-      linkElem.as = as;
-    }
     linkElem.crossOrigin = 'true';
     document.head.append(linkElem);
   }
