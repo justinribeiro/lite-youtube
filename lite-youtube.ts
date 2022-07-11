@@ -285,8 +285,7 @@ export class LiteYTEmbed extends HTMLElement {
 
       // Oh wait, you're a YouTube short, so let's try to make you more workable
       if (this.isYouTubeShort()) {
-        this.params =
-          'loop=1&mute=1&modestbranding=1&playsinline=1&rel=0&enablejsapi=1';
+        this.params = `loop=1&mute=1&modestbranding=1&playsinline=1&rel=0&enablejsapi=1&playlist=${this.videoId}`;
         autoplay = 1;
       }
 
