@@ -20,13 +20,14 @@
 - _new in v1.1_: Adds `nocookie` attr for use with use youtube-nocookie.com as iframe embed uri
 - _new in v1.2_: Adds `playlistid` for playlist loading interface support
 - _new in v1.3_: Adds `loading=lazy` to image placeholder for more perf with `posterloading` attr if you'd like to use eager
+- _new in v1.4_: Adds `short` attr for enabling experimental YouTube Shorts mobile interaction support. See (example video)[https://www.youtube.com/watch?v=aw7CRQTuRfo] for details.
 
-## Install
+## Install via package manager
 
 This web component is built with ES modules in mind and is
 available on NPM:
 
-Install code-block:
+To install, use your package manager of choice:
 
 ```sh
 npm i @justinribeiro/lite-youtube
@@ -45,7 +46,7 @@ import '@justinribeiro/lite-youtube';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.3.2/lite-youtube.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.4.0/lite-youtube.js"></script>
 ```
 
 ## Basic Usage
@@ -54,22 +55,33 @@ If you want the paste-and-go version, you can simply load it via CDN:
 <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
 ```
 
+## Playlist Usage
+
+Setting the YouTube playlistid allows the playlist interface to load on interaction. Note, this still requires a videoid for to load a placeholder thumbnail as YouTube does not return a thumbnail for playlists in the API.
+
+```html
+  <lite-youtube
+    videoid="VLrYOji75Vc"
+    playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9"
+  ></lite-youtube>
+```
+
 ## Add Video Title
 
 ```html
 <lite-youtube
-  videoid="guJLfqTFfIw"
   videotitle="This is a video title"
+  videoid="guJLfqTFfIw"
 ></lite-youtube>
 ```
 
-## Change "Play" for Locale</h3>
+## Update interface for Locale</h3>
 
 ```html
 <lite-youtube
-  videoid="guJLfqTFfIw"
   videoplay="Mirar"
   videotitle="Mis hijos se burlan de mi español"
+  videoid="guJLfqTFfIw"
 >
 </lite-youtube>
 ```
@@ -90,11 +102,12 @@ Height and Width are responsive in the component.
 </div>
 ```
 
-## Set a video start time
+## Enable YouTube Shorts interaction on mobile
+
+See [the example video](https://www.youtube.com/watch?v=aw7CRQTuRfo) of how this feature works for additional details.
 
 ```html
-<!-- Start at 5 seconds -->
-<lite-youtube videoid="guJLfqTFfIw" videoStartAt="5"></lite-youtube>
+<lite-youtube videoid="vMImN9gghao" short></lite-youtube>
 ```
 
 ## AutoLoad with IntersectionObserver
@@ -105,14 +118,33 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 <lite-youtube videoid="guJLfqTFfIw" autoload> </lite-youtube>
 ```
 
+## Set a video start time
+
+```html
+<!-- Start at 5 seconds -->
+<lite-youtube videoid="guJLfqTFfIw" videoStartAt="5"></lite-youtube>
+```
+
+## Fine tune the poster quality for a video
+
+```html
+<lite-youtube
+  videoid="guJLfqTFfIw"
+  posterquality="maxresdefault"
+></lite-youtube>
+```
+
 ## YouTube QueryParams
 
-Use any [YouTube Embedded Players and Player Parameters](https://developers.google.com/youtube/player_parameters) you like
+Use any [YouTube Embedded Players and Player Parameters](https://developers.google.com/youtube/player_parameters) you like.
+
+> Note: the exception to this rule is the autoplay param; because of the nature of the performance loading and the inconsistency of usage, that parameter generally does not work. See [this comment](https://github.com/justinribeiro/lite-youtube/issues/66#issuecomment-1182110925) for details.
 
 ```html
 <lite-youtube videoid="guJLfqTFfIw" params="controls=0&enablejsapi=1">
 </lite-youtube>
 ```
+
 
 ## Attributes
 
