@@ -166,6 +166,16 @@ describe('<lite-youtube>', () => {
     expect(el['isYouTubeShort']()).to.be.equal(true);
   });
 
+  it('check for nonce injector', async () => {
+    window.liteYouTubeNonce = 'test-abcd1234';
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>`
+    );
+    expect(
+      el.shadowRoot.querySelector('style')?.getAttribute('nonce')
+    ).to.equal(window.liteYouTubeNonce);
+  });
+
   it('is valid A11y via aXe', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     await expect(el).shadowDom.to.be.accessible();

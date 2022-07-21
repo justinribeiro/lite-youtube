@@ -111,8 +111,12 @@ export class LiteYTEmbed extends HTMLElement {
    */
   private setupDom(): void {
     const shadowDom = this.attachShadow({ mode: 'open' });
+    let nonce = '';
+    if (window.liteYouTubeNonce) {
+      nonce = `nonce="${window.liteYouTubeNonce}"`;
+    }
     shadowDom.innerHTML = `
-      <style>
+      <style ${nonce}>
         :host {
           contain: content;
           display: block;
@@ -445,5 +449,8 @@ customElements.define('lite-youtube', LiteYTEmbed);
 declare global {
   interface HTMLElementTagNameMap {
     'lite-youtube': LiteYTEmbed;
+  }
+  interface Window {
+    liteYouTubeNonce: string;
   }
 }
