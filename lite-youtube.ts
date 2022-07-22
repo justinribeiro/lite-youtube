@@ -318,9 +318,6 @@ export class LiteYTEmbed extends HTMLElement {
    * Setup the placeholder image for the component
    */
   private initImagePlaceholder(): void {
-    // we don't know which image type to preload, so warm the connection
-    LiteYTEmbed.addPrefetch('preconnect', 'https://i.ytimg.com/');
-
     const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/${this.posterQuality}.webp`;
     const posterUrlJpeg = `https://i.ytimg.com/vi/${this.videoId}/${this.posterQuality}.jpg`;
     this.domRefImg.fallback.loading = this.posterLoading;
@@ -422,7 +419,10 @@ export class LiteYTEmbed extends HTMLElement {
    * Isolation and split caches adding serious complexity.
    */
   private static warmConnections(): void {
-    if (LiteYTEmbed.isPreconnected) return;
+    if (LiteYTEmbed.isPreconnected || window.liteYouTubeIsPreconnected) return;
+    // we don't know which image type to preload, so warm the connection
+    LiteYTEmbed.addPrefetch('preconnect', 'https://i.ytimg.com/');
+
     // Host that YT uses to serve JS needed by player, per amp-youtube
     LiteYTEmbed.addPrefetch('preconnect', 'https://s.ytimg.com');
 
@@ -441,6 +441,9 @@ export class LiteYTEmbed extends HTMLElement {
     );
     LiteYTEmbed.addPrefetch('preconnect', 'https://static.doubleclick.net');
     LiteYTEmbed.isPreconnected = true;
+
+    // multiple embeds in the same page don't check for each other
+    window.liteYouTubeIsPreconnected = true;
   }
 }
 // Register custom element
@@ -452,5 +455,6 @@ declare global {
   }
   interface Window {
     liteYouTubeNonce: string;
+    liteYouTubeIsPreconnected: boolean;
   }
 }
