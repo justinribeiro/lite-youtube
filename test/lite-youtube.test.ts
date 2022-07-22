@@ -1,13 +1,22 @@
 /* eslint-disable import/no-duplicates */
 import { html, fixture, expect } from '@open-wc/testing';
+import { fixtureCleanup } from '@open-wc/testing-helpers';
+
 import { setViewport } from '@web/test-runner-commands';
 
 import { LiteYTEmbed } from '../lite-youtube.js';
 import '../lite-youtube.js';
 
-const baseTemplate = html`<lite-youtube videoTitle="Test Me" videoid="guJLfqTFfIw"></lite-youtube>`;
+const baseTemplate = html`<lite-youtube
+  videoTitle="Test Me"
+  videoid="guJLfqTFfIw"
+></lite-youtube>`;
 
 describe('<lite-youtube>', () => {
+  afterEach(() => {
+    fixtureCleanup();
+  });
+
   it('attr sets the videoid', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     expect(el.videoId).to.equal('guJLfqTFfIw');
@@ -78,7 +87,7 @@ describe('<lite-youtube>', () => {
     );
     // this is a cheeky test by counting the test runner + the warm injector
     // TODO write a better observer
-    expect(document.head.querySelectorAll('link').length).to.be.equal(12);
+    expect(document.head.querySelectorAll('link').length).to.be.equal(1);
   });
 
   it('nocookie attr should change iframe url target', async () => {
@@ -146,10 +155,7 @@ describe('<lite-youtube>', () => {
 
   it('YouTube Short desktop check', async () => {
     const el = await fixture<LiteYTEmbed>(
-      html`<lite-youtube
-        videoid="guJLfqTFfIw"
-        short
-      ></lite-youtube>`
+      html`<lite-youtube videoid="guJLfqTFfIw" short></lite-youtube>`
     );
     expect(el['isYouTubeShort']()).to.be.equal(false);
   });
@@ -157,10 +163,7 @@ describe('<lite-youtube>', () => {
   it('YouTube Short mobile check', async () => {
     setViewport({ width: 360, height: 640 });
     const el = await fixture<LiteYTEmbed>(
-      html`<lite-youtube
-        videoid="guJLfqTFfIw"
-        short
-      ></lite-youtube>`
+      html`<lite-youtube videoid="guJLfqTFfIw" short></lite-youtube>`
     );
     el.click();
     expect(el['isYouTubeShort']()).to.be.equal(true);
@@ -174,6 +177,18 @@ describe('<lite-youtube>', () => {
     expect(
       el.shadowRoot.querySelector('style')?.getAttribute('nonce')
     ).to.equal(window.liteYouTubeNonce);
+  });
+
+  it('check global preconnect state', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+        <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+        <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>`
+    );
+    expect(window.liteYouTubeIsPreconnected).to.be.true;
+    expect(
+      document.querySelectorAll('head > link[rel=preconnect]').length
+    ).to.equal(6);
   });
 
   it('is valid A11y via aXe', async () => {
