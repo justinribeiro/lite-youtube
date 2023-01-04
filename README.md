@@ -55,15 +55,64 @@ If you want the paste-and-go version, you can simply load it via CDN:
 <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
 ```
 
+## Basic Usage with Fallback Link
+
+A fallback appears in any of the following circumstances:
+
+1. Before the compontent is initialized
+1. When JS is disabled (like `<noscript>`)
+1. When JS fails or the lite-youtube script is not loaded/executed
+1. When the browser doesn't support web components
+
+```html
+<lite-youtube videoid="guJLfqTFfIw">
+  <a class="lite-youtube-fallback" href="https://www.youtube.com/watch?v=guJLfqTFfIw">Watch on YouTube: "Sample output of devtools-to-video cli tool"</a>
+</lite-youtube>
+```
+
+Example CSS:
+
+```css
+.lite-youtube-fallback {
+	aspect-ratio: 16 / 9; /* matches YouTube player */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	gap: 1em;
+	padding: 1em;
+	background-color: #000;
+	color: #fff;
+	text-decoration: none;
+}
+
+/* right-facing triangle "Play" icon */
+.lite-youtube-fallback::before {
+	display: block;
+	content: '';
+	border: solid transparent;
+	border-width: 2em 0 2em 3em;
+	border-left-color: red;
+}
+
+.lite-youtube-fallback:hover::before {
+	border-left-color: #fff;
+}
+
+.lite-youtube-fallback:focus {
+	outline: 2px solid red;
+}
+```
+
 ## Playlist Usage
 
 Setting the YouTube playlistid allows the playlist interface to load on interaction. Note, this still requires a videoid for to load a placeholder thumbnail as YouTube does not return a thumbnail for playlists in the API.
 
 ```html
-  <lite-youtube
-    videoid="VLrYOji75Vc"
-    playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9"
-  ></lite-youtube>
+<lite-youtube
+  videoid="VLrYOji75Vc"
+  playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9"
+></lite-youtube>
 ```
 
 ## Add Video Title
