@@ -26,6 +26,7 @@
   ],
   "license": "MIT",
   "version": "1.4.0",
+  "type": "module",
   "main": "lite-youtube.js",
   "module": "lite-youtube.js",
   "types": "lite-youtube.d.ts",
