@@ -123,7 +123,6 @@ export class LiteYTEmbed extends HTMLElement {
           position: relative;
           width: 100%;
           padding-bottom: calc(100% / (16 / 9));
-          --lyt-animation: all 0.2s cubic-bezier(0, 0, 0.2, 1);
         }
 
         @media (max-width: 40em) {
@@ -155,7 +154,6 @@ export class LiteYTEmbed extends HTMLElement {
           background-image: linear-gradient(180deg, #111 -20%, transparent 90%);
           height: 60px;
           width: 100%;
-          transition: var(--lyt-animation);
           z-index: 1;
         }
 
