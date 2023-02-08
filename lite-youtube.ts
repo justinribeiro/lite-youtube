@@ -436,8 +436,9 @@ export class LiteYTEmbed extends HTMLElement {
     window.liteYouTubeIsPreconnected = true;
   }
 }
-// Register custom element
-customElements.define('lite-youtube', LiteYTEmbed);
+
+// Register custom element if not already defined
+customElements.get('lite-youtube') || customElements.define('lite-youtube', LiteYTEmbed);
 
 declare global {
   interface HTMLElementTagNameMap {
