@@ -59,6 +59,14 @@ export class LiteYTEmbed extends HTMLElement {
     this.setAttribute('playlistid', id);
   }
 
+  get aspectRatio(): string {
+    return this.getAttribute('aspectratio') ?? '';
+  }
+
+  set aspectRatio(title: string) {
+    this.setAttribute('aspectratio', title);
+  }
+
   get videoTitle(): string {
     return this.getAttribute('videotitle') || 'Video';
   }
@@ -122,12 +130,12 @@ export class LiteYTEmbed extends HTMLElement {
           display: block;
           position: relative;
           width: 100%;
-          padding-bottom: calc(100% / (16 / 9));
+          padding-bottom: calc(100% / (${this.aspectRatio || '16 / 9'}));
         }
 
         @media (max-width: 40em) {
           :host([short]) {
-            padding-bottom: calc(100% / (9 / 16));
+            padding-bottom: calc(100% / (${this.aspectRatio || '9 / 16'}));
           }
         }
 
