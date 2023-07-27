@@ -42,6 +42,20 @@ describe('<lite-youtube>', () => {
     expect(el.videoPlay).to.equal('Run');
   });
 
+  it('videoTitle set/get attr', async () => {
+    const el = await fixture<LiteYTEmbed>(baseTemplate);
+    expect(el.videoTitle).to.equal('Test Me');
+    el.setAttribute('videoTitle', 'Test Me Again');
+    expect(el.videoTitle).to.equal('Test Me Again');
+  });
+
+  it('videoPlay set/get attr', async () => {
+    const el = await fixture<LiteYTEmbed>(baseTemplate);
+    expect(el.videoPlay).to.equal('Play');
+    el.setAttribute('videoPlay', 'Run');
+    expect(el.videoPlay).to.equal('Run');
+  });
+
   it('clicking button should load iframe', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     expect(el.shadowRoot.querySelector('iframe')).to.be.null;
