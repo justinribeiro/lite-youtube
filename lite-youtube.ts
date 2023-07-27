@@ -32,7 +32,7 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   static get observedAttributes(): string[] {
-    return ['videoid', 'playlistid'];
+    return ['videoid', 'playlistid', 'videoplay', 'videotitle'];
   }
 
   connectedCallback(): void {
@@ -68,11 +68,11 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   get videoPlay(): string {
-    return this.getAttribute('videoPlay') || 'Play';
+    return this.getAttribute('videoplay') || 'Play';
   }
 
   set videoPlay(name: string) {
-    this.setAttribute('videoPlay', name);
+    this.setAttribute('videoplay', name);
   }
 
   get videoStartAt(): string {
@@ -239,25 +239,15 @@ export class LiteYTEmbed extends HTMLElement {
     oldVal: unknown,
     newVal: unknown
   ): void {
-    switch (name) {
-      case 'videoid':
-      case 'playlistid':
-      case 'videoTitle':
-      case 'videoPlay': {
-        if (oldVal !== newVal) {
-          this.setupComponent();
+    if (oldVal !== newVal) {
+      this.setupComponent();
 
-          // if we have a previous iframe, remove it and the activated class
-          if (this.domRefFrame.classList.contains('activated')) {
-            this.domRefFrame.classList.remove('activated');
-            this.shadowRoot.querySelector('iframe')!.remove();
-            this.isIframeLoaded = false;
-          }
-        }
-        break;
+      // if we have a previous iframe, remove it and the activated class
+      if (this.domRefFrame.classList.contains('activated')) {
+        this.domRefFrame.classList.remove('activated');
+        this.shadowRoot.querySelector('iframe')!.remove();
+        this.isIframeLoaded = false;
       }
-      default:
-        break;
     }
   }
 
