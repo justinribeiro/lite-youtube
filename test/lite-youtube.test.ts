@@ -33,6 +33,7 @@ describe('<lite-youtube>', () => {
     expect(el.videoTitle).to.equal('Test Me');
     el.videoTitle = 'Test Me Again';
     expect(el.videoTitle).to.equal('Test Me Again');
+    expect(el.title).to.equal('Play: Test Me Again');
   });
 
   it('videoPlay set/get', async () => {
@@ -40,20 +41,23 @@ describe('<lite-youtube>', () => {
     expect(el.videoPlay).to.equal('Play');
     el.videoPlay = 'Run';
     expect(el.videoPlay).to.equal('Run');
+    expect(el.title).to.equal('Run: Test Me');
   });
 
   it('videoTitle set/get attr', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     expect(el.videoTitle).to.equal('Test Me');
-    el.setAttribute('videoTitle', 'Test Me Again');
+    el.setAttribute('videotitle', 'Test Me Again');
     expect(el.videoTitle).to.equal('Test Me Again');
+    expect(el.title).to.equal('Play: Test Me Again');
   });
 
   it('videoPlay set/get attr', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     expect(el.videoPlay).to.equal('Play');
-    el.setAttribute('videoPlay', 'Run');
+    el.setAttribute('videoplay', 'Run');
     expect(el.videoPlay).to.equal('Run');
+    expect(el.title).to.equal('Run: Test Me');
   });
 
   it('clicking button should load iframe', async () => {
