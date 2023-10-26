@@ -193,13 +193,13 @@ export class LiteYTEmbed extends HTMLElement {
           display: none;
         }
       </style>
-      <div id="frame">
-        <picture>
+      <div id="frame" part="frame">
+        <picture part="picture-frame">
           <source id="webpPlaceholder" type="image/webp">
           <source id="jpegPlaceholder" type="image/jpeg">
-          <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy">
+          <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy" part="picture">
         </picture>
-        <button id="playButton"></button>
+        <button id="playButton" part="play-button"></button>
       </div>
     `;
     this.domRefFrame = shadowDom.querySelector<HTMLDivElement>('#frame')!;
