@@ -36,7 +36,7 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.addEventListener('pointerover', LiteYTEmbed.warmConnections, {
+    this.addEventListener('pointerover', () => LiteYTEmbed.warmConnections(this), {
       once: true,
     });
 
@@ -219,7 +219,7 @@ export class LiteYTEmbed extends HTMLElement {
 
     this.domRefPlayButton.setAttribute(
       'aria-label',
-      `${this.videoPlay}: ${this.videoTitle}`
+      `${this.videoPlay}: ${this.videoTitle}`,
     );
     this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
 
@@ -237,7 +237,7 @@ export class LiteYTEmbed extends HTMLElement {
   attributeChangedCallback(
     name: string,
     oldVal: unknown,
-    newVal: unknown
+    newVal: unknown,
   ): void {
     if (oldVal !== newVal) {
       this.setupComponent();
@@ -289,7 +289,7 @@ export class LiteYTEmbed extends HTMLElement {
           },
           bubbles: true,
           cancelable: true,
-        })
+        }),
       );
     }
   }
@@ -306,11 +306,11 @@ export class LiteYTEmbed extends HTMLElement {
     this.domRefImg.fallback.src = posterUrlJpeg;
     this.domRefImg.fallback.setAttribute(
       'aria-label',
-      `${this.videoPlay}: ${this.videoTitle}`
+      `${this.videoPlay}: ${this.videoTitle}`,
     );
     this.domRefImg?.fallback?.setAttribute(
       'alt',
-      `${this.videoPlay}: ${this.videoTitle}`
+      `${this.videoPlay}: ${this.videoTitle}`,
     );
   }
 
@@ -327,7 +327,7 @@ export class LiteYTEmbed extends HTMLElement {
     const observer = new IntersectionObserver((entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !this.isIframeLoaded) {
-          LiteYTEmbed.warmConnections();
+          LiteYTEmbed.warmConnections(this);
           this.addIframe(true);
           observer.unobserve(this);
         }
@@ -355,7 +355,7 @@ export class LiteYTEmbed extends HTMLElement {
           .querySelector('iframe')
           ?.contentWindow?.postMessage(
             '{"event":"command","func":"' + 'playVideo' + '","args":""}',
-            '*'
+            '*',
           );
         // for youtube video recording demo
       }, 2000);
@@ -398,28 +398,34 @@ export class LiteYTEmbed extends HTMLElement {
    * http://crbug.com/593267 But TBH, I don't think it'll happen soon with Site
    * Isolation and split caches adding serious complexity.
    */
-  private static warmConnections(): void {
+  private static warmConnections(context: LiteYTEmbed): void {
     if (LiteYTEmbed.isPreconnected || window.liteYouTubeIsPreconnected) return;
+
     // we don't know which image type to preload, so warm the connection
     LiteYTEmbed.addPrefetch('preconnect', 'https://i.ytimg.com/');
 
     // Host that YT uses to serve JS needed by player, per amp-youtube
     LiteYTEmbed.addPrefetch('preconnect', 'https://s.ytimg.com');
 
-    // The iframe document and most of its subresources come right off
-    // youtube.com
-    LiteYTEmbed.addPrefetch('preconnect', 'https://www.youtube.com');
+    if (!context.noCookie) {
+      // The iframe document and most of its subresources come right off
+      // youtube.com
+      LiteYTEmbed.addPrefetch('preconnect', 'https://www.youtube.com');
 
-    // The botguard script is fetched off from google.com
-    LiteYTEmbed.addPrefetch('preconnect', 'https://www.google.com');
+      // The botguard script is fetched off from google.com
+      LiteYTEmbed.addPrefetch('preconnect', 'https://www.google.com');
 
-    // TODO: Not certain if these ad related domains are in the critical path.
-    // Could verify with domain-specific throttling.
-    LiteYTEmbed.addPrefetch(
-      'preconnect',
-      'https://googleads.g.doubleclick.net'
-    );
-    LiteYTEmbed.addPrefetch('preconnect', 'https://static.doubleclick.net');
+      // TODO: Not certain if these ad related domains are in the critical path.
+      // Could verify with domain-specific throttling.
+      LiteYTEmbed.addPrefetch(
+        'preconnect',
+        'https://googleads.g.doubleclick.net',
+      );
+      LiteYTEmbed.addPrefetch('preconnect', 'https://static.doubleclick.net');
+    } else {
+      LiteYTEmbed.addPrefetch('preconnect', 'https://www.youtube-nocookie.com');
+    }
+
     LiteYTEmbed.isPreconnected = true;
 
     // multiple embeds in the same page don't check for each other
