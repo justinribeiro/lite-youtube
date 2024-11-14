@@ -1,13 +1,18 @@
 /* eslint-disable import/no-duplicates */
 import { html, fixture, expect } from '@open-wc/testing';
-import { fixtureCleanup } from '@open-wc/testing-helpers';
-
+import { elementUpdated, fixtureCleanup } from '@open-wc/testing-helpers';
 import { setViewport } from '@web/test-runner-commands';
 
 import { LiteYTEmbed } from '../lite-youtube.js';
 import '../lite-youtube.js';
 
 const baseTemplate = html`<lite-youtube
+  videoTitle="Test Me"
+  videoid="guJLfqTFfIw"
+></lite-youtube>`;
+
+const aspectRatioTemplate = html`<lite-youtube
+  style="--lite-youtube-aspect-ratio: 2 / 3;"
   videoTitle="Test Me"
   videoid="guJLfqTFfIw"
 ></lite-youtube>`;
@@ -65,7 +70,7 @@ describe('<lite-youtube>', () => {
     expect(el.shadowRoot.querySelector('iframe')).to.be.null;
     el.click();
     expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
-      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>'
+      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>',
     );
   });
 
@@ -74,13 +79,13 @@ describe('<lite-youtube>', () => {
     expect(el.shadowRoot.querySelector('iframe')).to.be.null;
     el.click();
     expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
-      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>'
+      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>',
     );
     el.videoId = 'VZ9VSypxhEQ';
     expect(el.shadowRoot.querySelector('iframe')).to.be.null;
     el.click();
     expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
-      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/VZ9VSypxhEQ?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>'
+      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/VZ9VSypxhEQ?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>',
     );
   });
 
@@ -89,19 +94,19 @@ describe('<lite-youtube>', () => {
     expect(el.shadowRoot.querySelector('iframe')).to.be.null;
     el.click();
     expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
-      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>'
+      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>',
     );
     el.playlistId = 'PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9';
     expect(el.shadowRoot.querySelector('iframe')).to.be.null;
     el.click();
     expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
-      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/?listType=playlist&amp;list=PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9&amp;autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>'
+      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/?listType=playlist&amp;list=PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9&amp;autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>',
     );
   });
 
   it('autoload should inject iframe and warm', async () => {
     const el = await fixture<LiteYTEmbed>(
-      html`<lite-youtube videoid="guJLfqTFfIw" autoLoad></lite-youtube>`
+      html`<lite-youtube videoid="guJLfqTFfIw" autoLoad></lite-youtube>`,
     );
     // this is a cheeky test by counting the test runner + the warm injector
     // TODO write a better observer
@@ -110,11 +115,11 @@ describe('<lite-youtube>', () => {
 
   it('nocookie attr should change iframe url target', async () => {
     const el = await fixture<LiteYTEmbed>(
-      html`<lite-youtube videoid="guJLfqTFfIw" nocookie></lite-youtube>`
+      html`<lite-youtube videoid="guJLfqTFfIw" nocookie></lite-youtube>`,
     );
     el.click();
     expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
-      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube-nocookie.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Video"></iframe>'
+      '<iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube-nocookie.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Video"></iframe>',
     );
   });
 
@@ -123,12 +128,12 @@ describe('<lite-youtube>', () => {
       html`<lite-youtube
         videoid="guJLfqTFfIw"
         posterQuality="mqdefault"
-      ></lite-youtube>`
+      ></lite-youtube>`,
     );
     expect(el.posterQuality).to.be.equal('mqdefault');
 
     const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
-      '#fallbackPlaceholder'
+      '#fallbackPlaceholder',
     );
     const webp = el.shadowRoot?.querySelector('#webpPlaceholder');
     const jpeg = el.shadowRoot?.querySelector('#jpegPlaceholder');
@@ -143,12 +148,12 @@ describe('<lite-youtube>', () => {
       html`<lite-youtube
         videoid="guJLfqTFfIw"
         posterQuality="mqdefault"
-      ></lite-youtube>`
+      ></lite-youtube>`,
     );
     expect(el.posterLoading).to.be.equal('lazy');
 
     const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
-      '#fallbackPlaceholder'
+      '#fallbackPlaceholder',
     );
 
     expect(fallback?.loading).to.be.equal('lazy');
@@ -160,12 +165,12 @@ describe('<lite-youtube>', () => {
         videoid="guJLfqTFfIw"
         posterQuality="mqdefault"
         posterloading="eager"
-      ></lite-youtube>`
+      ></lite-youtube>`,
     );
     expect(el.posterLoading).to.be.equal('eager');
 
     const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
-      '#fallbackPlaceholder'
+      '#fallbackPlaceholder',
     );
 
     expect(fallback?.loading).to.be.equal('eager');
@@ -173,7 +178,7 @@ describe('<lite-youtube>', () => {
 
   it('YouTube Short desktop check', async () => {
     const el = await fixture<LiteYTEmbed>(
-      html`<lite-youtube videoid="guJLfqTFfIw" short></lite-youtube>`
+      html`<lite-youtube videoid="guJLfqTFfIw" short></lite-youtube>`,
     );
     expect(el['isYouTubeShort']()).to.be.equal(false);
   });
@@ -181,7 +186,7 @@ describe('<lite-youtube>', () => {
   it('YouTube Short mobile check', async () => {
     setViewport({ width: 360, height: 640 });
     const el = await fixture<LiteYTEmbed>(
-      html`<lite-youtube videoid="guJLfqTFfIw" short></lite-youtube>`
+      html`<lite-youtube videoid="guJLfqTFfIw" short></lite-youtube>`,
     );
     el.click();
     expect(el['isYouTubeShort']()).to.be.equal(true);
@@ -190,10 +195,10 @@ describe('<lite-youtube>', () => {
   it('check for nonce injector', async () => {
     window.liteYouTubeNonce = 'test-abcd1234';
     const el = await fixture<LiteYTEmbed>(
-      html`<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>`
+      html`<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>`,
     );
     expect(
-      el.shadowRoot.querySelector('style')?.getAttribute('nonce')
+      el.shadowRoot.querySelector('style')?.getAttribute('nonce'),
     ).to.equal(window.liteYouTubeNonce);
   });
 
@@ -201,12 +206,21 @@ describe('<lite-youtube>', () => {
     const el = await fixture<LiteYTEmbed>(
       html`<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
         <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
-        <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>`
+        <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>`,
     );
     expect(window.liteYouTubeIsPreconnected).to.be.true;
     expect(
-      document.querySelectorAll('head > link[rel=preconnect]').length
+      document.querySelectorAll('head > link[rel=preconnect]').length,
     ).to.equal(6);
+  });
+
+  it('is correct aspect-ratio override', async () => {
+    const el = await fixture<LiteYTEmbed>(aspectRatioTemplate);
+    await elementUpdated(el);
+    const aspectRatio = getComputedStyle(el.shadowRoot.host)
+      .getPropertyValue('--aspect-ratio')
+      .trim();
+    await expect(aspectRatio).to.equal('2 / 3');
   });
 
   it('is valid A11y via aXe', async () => {
