@@ -142,8 +142,9 @@ export class LiteYTEmbed extends HTMLElement {
           cursor: pointer;
         }
 
-        #fallbackPlaceholder {
+        #fallbackPlaceholder, slot[name=image]::slotted(*) {
           object-fit: cover;
+          width: 100%;
         }
 
         #frame::before {
@@ -195,9 +196,11 @@ export class LiteYTEmbed extends HTMLElement {
       </style>
       <div id="frame">
         <picture>
-          <source id="webpPlaceholder" type="image/webp">
-          <source id="jpegPlaceholder" type="image/jpeg">
-          <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy">
+          <slot name="image">
+            <source id="webpPlaceholder" type="image/webp">
+            <source id="jpegPlaceholder" type="image/jpeg">
+            <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy">
+          </slot>
         </picture>
         <button id="playButton"></button>
       </div>
