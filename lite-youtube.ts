@@ -120,6 +120,7 @@ export class LiteYTEmbed extends HTMLElement {
         :host {
           --aspect-ratio: var(--lite-youtube-aspect-ratio, 16 / 9);
           --aspect-ratio-short: var(--lite-youtube-aspect-ratio-short, 9 / 16);
+          --frame-shadow-visible: var(--lite-youtube-frame-shadow-visible, yes);
           contain: content;
           display: block;
           position: relative;
@@ -149,15 +150,17 @@ export class LiteYTEmbed extends HTMLElement {
           width: 100%;
         }
 
-        #frame::before {
-          content: '';
-          display: block;
-          position: absolute;
-          top: 0;
-          background-image: linear-gradient(180deg, #111 -20%, transparent 90%);
-          height: 60px;
-          width: 100%;
-          z-index: 1;
+        @container style(--frame-shadow-visible: yes) {
+          #frame::before {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            background-image: linear-gradient(180deg, #111 -20%, transparent 90%);
+            height: 60px;
+            width: 100%;
+            z-index: 1;
+          }
         }
 
         #playButton {

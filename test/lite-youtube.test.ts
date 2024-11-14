@@ -17,6 +17,12 @@ const aspectRatioTemplate = html`<lite-youtube
   videoid="guJLfqTFfIw"
 ></lite-youtube>`;
 
+const frameShadowTemplate = html`<lite-youtube
+  style="--lite-youtube-frame-shadow-visible: no;"
+  videoTitle="Test Me"
+  videoid="guJLfqTFfIw"
+></lite-youtube>`;
+
 describe('<lite-youtube>', () => {
   afterEach(() => {
     fixtureCleanup();
@@ -221,6 +227,15 @@ describe('<lite-youtube>', () => {
       .getPropertyValue('--aspect-ratio')
       .trim();
     await expect(aspectRatio).to.equal('2 / 3');
+  });
+
+  it('is correct frame shadow override', async () => {
+    const el = await fixture<LiteYTEmbed>(frameShadowTemplate);
+    await elementUpdated(el);
+    const frameShadowVisible = getComputedStyle(el.shadowRoot.host)
+      .getPropertyValue('--frame-shadow-visible')
+      .trim();
+    await expect(frameShadowVisible).to.equal('no');
   });
 
   it('is valid A11y via aXe', async () => {
