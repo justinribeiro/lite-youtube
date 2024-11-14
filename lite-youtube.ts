@@ -36,9 +36,13 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.addEventListener('pointerover', () => LiteYTEmbed.warmConnections(this), {
-      once: true,
-    });
+    this.addEventListener(
+      'pointerover',
+      () => LiteYTEmbed.warmConnections(this),
+      {
+        once: true,
+      },
+    );
 
     this.addEventListener('click', () => this.addIframe());
   }
@@ -81,6 +85,10 @@ export class LiteYTEmbed extends HTMLElement {
 
   get autoLoad(): boolean {
     return this.hasAttribute('autoload');
+  }
+
+  get autoPause(): boolean {
+    return this.hasAttribute('autopause');
   }
 
   get noCookie(): boolean {
@@ -231,7 +239,7 @@ export class LiteYTEmbed extends HTMLElement {
     );
     this.setAttribute('title', `${this.videoPlay}: ${this.videoTitle}`);
 
-    if (this.autoLoad || this.isYouTubeShort()) {
+    if (this.autoLoad || this.isYouTubeShort() || this.autoPause) {
       this.initIntersectionObserver();
     }
   }
@@ -273,6 +281,12 @@ export class LiteYTEmbed extends HTMLElement {
         embedTarget = `?listType=playlist&list=${this.playlistId}&`;
       } else {
         embedTarget = `${this.videoId}?`;
+      }
+
+      // autopause needs the postMessage() in the iframe, so you have to enable
+      // the jsapi
+      if (this.autoPause) {
+        this.params = `enablejsapi=1`;
       }
 
       // Oh wait, you're a YouTube short, so let's try to make you more workable
@@ -343,6 +357,27 @@ export class LiteYTEmbed extends HTMLElement {
     }, options);
 
     observer.observe(this);
+
+    // this needs the iframe loaded, so it has to run post the IO load at the
+    // least otherwise things will break
+    if (this.autoPause) {
+      const windowPause = new IntersectionObserver(
+        (e, o) => {
+          e.forEach(entry => {
+            if (entry.intersectionRatio !== 1) {
+              this.shadowRoot
+                .querySelector('iframe')
+                ?.contentWindow?.postMessage(
+                  '{"event":"command","func":"pauseVideo","args":""}',
+                  '*',
+                );
+            }
+          });
+        },
+        { threshold: 1 },
+      );
+      windowPause.observe(this);
+    }
   }
 
   /**

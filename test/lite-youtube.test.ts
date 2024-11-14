@@ -119,6 +119,15 @@ describe('<lite-youtube>', () => {
     expect(document.head.querySelectorAll('link').length).to.be.equal(1);
   });
 
+  it('autoPause should inject iframe and warm', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube videoid="guJLfqTFfIw" autoPause></lite-youtube>`,
+    );
+    // this is a cheeky test by counting the test runner + the warm injector
+    // TODO write a better observer
+    expect(document.head.querySelectorAll('link').length).to.be.equal(7);
+  });
+
   it('nocookie attr should change iframe url target', async () => {
     const el = await fixture<LiteYTEmbed>(
       html`<lite-youtube videoid="guJLfqTFfIw" nocookie></lite-youtube>`,
