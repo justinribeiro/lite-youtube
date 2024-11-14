@@ -118,16 +118,18 @@ export class LiteYTEmbed extends HTMLElement {
     shadowDom.innerHTML = `
       <style ${nonce}>
         :host {
+          --aspect-ratio: var(--lite-youtube-aspect-ratio, 16 / 9);
+          --aspect-ratio-short: var(--lite-youtube-aspect-ratio-short, 9 / 16);
           contain: content;
           display: block;
           position: relative;
           width: 100%;
-          padding-bottom: calc(100% / (16 / 9));
+          aspect-ratio: var(--aspect-ratio);
         }
 
         @media (max-width: 40em) {
           :host([short]) {
-            padding-bottom: calc(100% / (9 / 16));
+            aspect-ratio: var(--aspect-ratio-short);
           }
         }
 

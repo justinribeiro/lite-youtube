@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
+    />
+    <title>lite-youtube demo</title>
+    <script type="module" src="../lite-youtube.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      div {
+
+        padding: 1rem;
+      }
+      body {
+        max-width: 800px;
+        margin: auto;
+      }
+      pre {
+        width: 100%;
+        padding: 1em;
+        overflow-x: scroll;
+        background-clip: z;
+        background-color: #eee;
+      }
+      .styleIt {
+        width: 400px;
+      }
+      #bigBlock {
+        height: 600px;
+      }
+      lite-youtube {
+        --lite-youtube-aspect-ratio: 2 / 3;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+    <h3>YouTube Short testing</h3>
+    <pre>
+&lt;style&gt;&#10;  lite-youtube {&#10;    --lite-youtube-aspect-ratio: 2 / 3;&#10;  }&#10;&lt;/style&gt;
+&lt;lite-youtube videoid=&quot;vMImN9gghao&quot;&gt;&lt;/lite-youtube&gt;
+    </pre>
+    </div>
+    <lite-youtube videoid="vMImN9gghao"></lite-youtube>
+  </body>
+</html>
