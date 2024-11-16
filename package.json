@@ -44,6 +44,7 @@
     "@typescript-eslint/parser": "^8.14.0",
     "@web/dev-server": "^0.4.6",
     "@web/test-runner": "^0.19.0",
+    "chai": "^5.1.2",
     "concurrently": "^9.1.0",
     "eslint": "^9.14.0",
     "eslint-config-prettier": "^9.1.0",

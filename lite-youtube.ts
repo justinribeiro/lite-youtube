@@ -242,6 +242,7 @@ export class LiteYTEmbed extends HTMLElement {
     if (this.autoLoad || this.isYouTubeShort() || this.autoPause) {
       this.initIntersectionObserver();
     }
+    this.injectSearchNoScript();
   }
 
   /**
@@ -267,6 +268,45 @@ export class LiteYTEmbed extends HTMLElement {
     }
   }
 
+  // h/t @paulirish et al
+  // https://github.com/paulirish/lite-youtube-embed/issues/105
+  // differs in that we inject into the lightdom above any other nodes so our
+  // slots or fallbacks still work
+  private injectSearchNoScript(): void {
+    const eleNoScript = document.createElement('noscript');
+    this.prepend(eleNoScript);
+    eleNoScript.innerHTML = this.generateIframe();
+  }
+
+  private generateIframe(isIntersectionObserver = false): string {
+    let autoplay = isIntersectionObserver ? 0 : 1;
+    const wantsNoCookie = this.noCookie ? '-nocookie' : '';
+    let embedTarget;
+    if (this.playlistId) {
+      embedTarget = `?listType=playlist&list=${this.playlistId}&`;
+    } else {
+      embedTarget = `${this.videoId}?`;
+    }
+
+    // autopause needs the postMessage() in the iframe, so you have to enable
+    // the jsapi
+    if (this.autoPause) {
+      this.params = `enablejsapi=1`;
+    }
+
+    // Oh wait, you're a YouTube short, so let's try to make you more workable
+    if (this.isYouTubeShort()) {
+      this.params = `loop=1&mute=1&modestbranding=1&playsinline=1&rel=0&enablejsapi=1&playlist=${this.videoId}`;
+      autoplay = 1;
+    }
+
+    return `
+<iframe credentialless frameborder="0" title="${this.videoTitle}"
+  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+  src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}&${this.params}"
+></iframe>`;
+  }
+
   /**
    * Inject the iframe into the component body
    * @param {boolean} isIntersectionObserver
@@ -274,32 +314,9 @@ export class LiteYTEmbed extends HTMLElement {
   private addIframe(isIntersectionObserver = false): void {
     if (!this.isIframeLoaded) {
       // Don't autoplay the intersection observer injection, it's weird
-      let autoplay = isIntersectionObserver ? 0 : 1;
-      const wantsNoCookie = this.noCookie ? '-nocookie' : '';
-      let embedTarget;
-      if (this.playlistId) {
-        embedTarget = `?listType=playlist&list=${this.playlistId}&`;
-      } else {
-        embedTarget = `${this.videoId}?`;
-      }
 
-      // autopause needs the postMessage() in the iframe, so you have to enable
-      // the jsapi
-      if (this.autoPause) {
-        this.params = `enablejsapi=1`;
-      }
+      const iframeHTML = this.generateIframe(isIntersectionObserver);
 
-      // Oh wait, you're a YouTube short, so let's try to make you more workable
-      if (this.isYouTubeShort()) {
-        this.params = `loop=1&mute=1&modestbranding=1&playsinline=1&rel=0&enablejsapi=1&playlist=${this.videoId}`;
-        autoplay = 1;
-      }
-
-      const iframeHTML = `
-<iframe credentialless frameborder="0" title="${this.videoTitle}"
-  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}&${this.params}"
-></iframe>`;
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
       this.domRefFrame.classList.add('activated');
       this.isIframeLoaded = true;
