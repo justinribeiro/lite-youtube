@@ -1,5 +1,5 @@
 /* eslint-disable import/no-duplicates */
-import { html, fixture, expect } from '@open-wc/testing';
+import { html, fixture, expect, aTimeout } from '@open-wc/testing';
 import { elementUpdated, fixtureCleanup } from '@open-wc/testing-helpers';
 import { setViewport } from '@web/test-runner-commands';
 
@@ -145,13 +145,17 @@ describe('<lite-youtube>', () => {
         posterQuality="mqdefault"
       ></lite-youtube>`,
     );
+
+    // Because we async check the poster now for the 404, we need to wait a tick
+    // so we cheat and await 150ms
+    await elementUpdated(el);
+    await aTimeout(150);
+
     expect(el.posterQuality).to.be.equal('mqdefault');
 
     const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
       '#fallbackPlaceholder',
     );
-    const webp = el.shadowRoot?.querySelector('#webpPlaceholder');
-    const jpeg = el.shadowRoot?.querySelector('#jpegPlaceholder');
 
     const checkStringOne = 'https://i.ytimg.com/vi/guJLfqTFfIw/mqdefault.jpg';
 
@@ -182,6 +186,11 @@ describe('<lite-youtube>', () => {
         posterloading="eager"
       ></lite-youtube>`,
     );
+    // Because we async check the poster now for the 404, we need to wait a tick
+    // so we cheat and await 150ms
+    await elementUpdated(el);
+    await aTimeout(150);
+
     expect(el.posterLoading).to.be.equal('eager');
 
     const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(

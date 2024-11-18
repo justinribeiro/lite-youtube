@@ -114,6 +114,10 @@ export class LiteYTEmbed extends HTMLElement {
     this.setAttribute('params', opts);
   }
 
+  set posterQuality(opts: string) {
+    this.setAttribute('posterquality', opts);
+  }
+
   /**
    * Define our shadowDOM for the component
    */
@@ -231,7 +235,14 @@ export class LiteYTEmbed extends HTMLElement {
    * Parse our attributes and fire up some placeholders
    */
   private setupComponent(): void {
-    this.initImagePlaceholder();
+    // If the named slot is not empty, then we save the network requests and
+    // don't fire up the selector; we use assignedNodes() since we're using
+    // default slot elements for the picture
+    const hasImgSlot: HTMLSlotElement =
+      this.shadowRoot.querySelector('slot[name=image]')!;
+    if (hasImgSlot.assignedNodes().length === 0) {
+      this.initImagePlaceholder();
+    }
 
     this.domRefPlayButton.setAttribute(
       'aria-label',
@@ -314,7 +325,6 @@ export class LiteYTEmbed extends HTMLElement {
   private addIframe(isIntersectionObserver = false): void {
     if (!this.isIframeLoaded) {
       // Don't autoplay the intersection observer injection, it's weird
-
       const iframeHTML = this.generateIframe(isIntersectionObserver);
 
       this.domRefFrame.insertAdjacentHTML('beforeend', iframeHTML);
@@ -337,12 +347,8 @@ export class LiteYTEmbed extends HTMLElement {
    * Setup the placeholder image for the component
    */
   private initImagePlaceholder(): void {
-    const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/${this.posterQuality}.webp`;
-    const posterUrlJpeg = `https://i.ytimg.com/vi/${this.videoId}/${this.posterQuality}.jpg`;
-    this.domRefImg.fallback.loading = this.posterLoading;
-    this.domRefImg.webp.srcset = posterUrlWebp;
-    this.domRefImg.jpeg.srcset = posterUrlJpeg;
-    this.domRefImg.fallback.src = posterUrlJpeg;
+    this.testPosterImage();
+
     this.domRefImg.fallback.setAttribute(
       'aria-label',
       `${this.videoPlay}: ${this.videoTitle}`,
@@ -351,6 +357,51 @@ export class LiteYTEmbed extends HTMLElement {
       'alt',
       `${this.videoPlay}: ${this.videoTitle}`,
     );
+  }
+
+  /**
+   * Slightly varied approach for our shadowDOM, but identical lookup approach to
+   * paulirish's https://github.com/paulirish/lite-youtube-embed
+   *
+   * Note, this won't run if the named slot=image is defined
+   */
+  private async testPosterImage(): Promise<void> {
+    setTimeout(() => {
+      const webpUrl = `https://i.ytimg.com/vi_webp/${this.videoId}/${this.posterQuality}.webp`;
+      const img = new Image();
+      img.fetchPriority = 'low'; // low priority to reduce network contention
+      img.referrerPolicy = 'origin'; // Not 100% sure it's needed, but https://github.com/ampproject/amphtml/pull/3940
+      img.src = webpUrl;
+      img.onload = async e => {
+        const target = e.target as HTMLImageElement;
+        // A pretty ugly hack since onerror won't fire on YouTube image 404.
+        // This is (probably) due to Youtube's style of returning data even with
+        // a 404 status. That data is a 120x90 placeholder image.
+        const noPoster =
+          target?.naturalHeight == 90 && target?.naturalWidth == 120;
+
+        // Diverge: this differs from Paul's in that I have a specific opinion
+        // about the fallback, given that we allow <slot> overriding and that
+        // having tested this against a lot of different cases, the safest
+        // fallback with respect to a missing poster appears to be the hqdefault
+        // even in cases where the maxresdefault for a JPG (which I find
+        // _doesn't_ actually always exist for the JPG case either as reported
+        // by some folks)
+        if (noPoster) {
+          this.posterQuality = 'hqdefault';
+        }
+
+        const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/${this.posterQuality}.webp`;
+        this.domRefImg.webp.srcset = posterUrlWebp;
+
+        const posterUrlJpeg = `https://i.ytimg.com/vi/${this.videoId}/${this.posterQuality}.jpg`;
+        this.domRefImg.fallback.loading = this.posterLoading;
+
+        this.domRefImg.jpeg.srcset = posterUrlJpeg;
+        this.domRefImg.fallback.src = posterUrlJpeg;
+        this.domRefImg.fallback.loading = this.posterLoading;
+      };
+    }, 100);
   }
 
   /**
