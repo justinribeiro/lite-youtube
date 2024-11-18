@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
+    />
+    <title>lite-youtube demo</title>
+    <script type="module" src="../lite-youtube.js"></script>
+    <style>
+      * {
+        box-sizing: content-box;
+      }
+      body {
+        max-width: 800px;
+        margin: auto;
+      }
+      pre {
+        width: 100%;
+        padding: 1em;
+        overflow-x: scroll;
+        background-clip: z;
+        background-color: #eee;
+      }
+      .styleIt {
+        width: 400px;
+      }
+      #bigBlock {
+        height: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Test if we feed gibberish to poster quality</p>
+    <lite-youtube
+      videoid="guJLfqTFfIw"
+      posterquality="dfdf"
+    >
+    </lite-youtube>
+    <br>
+    <p>Test if we feed maxresdefault to poster quality when it's not there</p>
+    <lite-youtube
+      videoid="guJLfqTFfIw"
+      posterquality="maxresdefault"
+    >
+    </lite-youtube>
+
+  </body>
+</html>
