@@ -40,13 +40,13 @@
     "@open-wc/testing": "^4.0.0",
     "@types/mocha": "^10.0.9",
     "@types/node": "^22.9.0",
-    "@typescript-eslint/eslint-plugin": "^8.14.0",
-    "@typescript-eslint/parser": "^8.14.0",
+    "@typescript-eslint/eslint-plugin": "^8.15.0",
+    "@typescript-eslint/parser": "^8.15.0",
     "@web/dev-server": "^0.4.6",
     "@web/test-runner": "^0.19.0",
     "chai": "^5.1.2",
     "concurrently": "^9.1.0",
-    "eslint": "^9.14.0",
+    "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
     "istanbul-badges-readme": "^1.9.0",
     "mocha": "^10.8.2",
@@ -64,9 +64,7 @@
     ],
     "rules": {
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": [
-        "error"
-      ],
+      "@typescript-eslint/no-unused-vars": "error",
       "import/no-unresolved": "off",
       "import/extensions": [
         "error",
