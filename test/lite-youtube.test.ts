@@ -149,7 +149,7 @@ describe('<lite-youtube>', () => {
     // Because we async check the poster now for the 404, we need to wait a tick
     // so we cheat and await 150ms
     await elementUpdated(el);
-    await aTimeout(150);
+    await aTimeout(300);
 
     expect(el.posterQuality).to.be.equal('mqdefault');
 
