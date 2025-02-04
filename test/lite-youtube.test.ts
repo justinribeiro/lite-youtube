@@ -264,6 +264,14 @@ describe('<lite-youtube>', () => {
     await expect(el).to.contain('noscript');
   });
 
+  it('has noscript search range in lightdom disabled', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube videoid="guJLfqTFfIw" disablenoscript></lite-youtube>`,
+    );
+    await elementUpdated(el);
+    await expect(el).to.not.contain('noscript');
+  });
+
   it('is valid A11y via aXe', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     await expect(el).shadowDom.to.be.accessible();
