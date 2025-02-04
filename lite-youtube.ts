@@ -118,6 +118,10 @@ export class LiteYTEmbed extends HTMLElement {
     this.setAttribute('posterquality', opts);
   }
 
+  get disableNoscript(): boolean {
+    return this.hasAttribute('disablenoscript');
+  }
+
   /**
    * Define our shadowDOM for the component
    */
@@ -253,7 +257,10 @@ export class LiteYTEmbed extends HTMLElement {
     if (this.autoLoad || this.isYouTubeShort() || this.autoPause) {
       this.initIntersectionObserver();
     }
-    this.injectSearchNoScript();
+
+    if (!this.disableNoscript) {
+      this.injectSearchNoScript();
+    }
   }
 
   /**
