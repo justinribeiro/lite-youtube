@@ -215,6 +215,7 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 ```
 
 ## Auto-Pause video when scrolled out of view
+Note: the custom poster image will load with this set, but will then disappear without any user interaction because of the intersection observer starting.
 ```html
  <lite-youtube videoid="VLrYOji75Vc" autopause></lite-youtube>
 ```
