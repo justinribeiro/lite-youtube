@@ -223,7 +223,7 @@ export class LiteYTEmbed extends HTMLElement {
             <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy">
           </slot>
         </picture>
-        <button id="playButton"></button>
+        <button id="playButton" part="playButton"></button>
       </div>
     `;
     this.domRefFrame = shadowDom.querySelector<HTMLDivElement>('#frame')!;
