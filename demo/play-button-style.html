@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
+    />
+    <title>lite-youtube demo</title>
+    <script type="module" src="../lite-youtube.js"></script>
+    <style>
+      * {
+        box-sizing: content-box;
+      }
+      body {
+        max-width: 800px;
+        margin: auto;
+      }
+      pre {
+        width: 100%;
+        padding: 1em;
+        overflow-x: scroll;
+        background-clip: z;
+        background-color: #eee;
+      }
+      .styleIt {
+        width: 400px;
+      }
+      #bigBlock {
+        height: 600px;
+      }
+      #player::part(playButton) {
+        background-image: none;
+        background-color: violet;
+      }
+      #player::part(playButton):hover {
+        background-image: none;
+        background-color: aquamarine;
+      }
+    </style>
+  </head>
+  <body>
+    <pre>
+      &lt;style&gt;
+        #player::part(playButton) {
+          background-image: none;
+          background-color: violet;
+        }
+        #player::part(playButton):hover {
+          background-image: none;
+          background-color: aquamarine;
+        }
+      &lt;/style&gt;
+      &lt;lite-youtube id=&quot;player&quot; videoid=&quot;guJLfqTFfIw&quot;&gt;&lt;/lite-youtube&gt;     
+      </pre>
+    <lite-youtube id="player" videoid="guJLfqTFfIw"></lite-youtube>
+  </body>
+</html>

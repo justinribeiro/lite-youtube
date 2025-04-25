@@ -24,6 +24,7 @@
 - _new in v1.5_: Adds support for nonce attribute via `window.liteYouTubeNonce` for CSP 2/3 support.
 - _new in v1.6_: Adds `autoPause` for pausing videos scrolled off screen; adds `--lite-youtube-aspect-ratio` CSS custom property create custom aspect ratio videos; adds `--lite-youtube-frame-shadow-visible` CSS custom property to disable frame shadow (flat look); adds a named slot `image` that allows for setting custom poster image; adds `credentialless` for COEP
 - _new in v1.7_: Adds support for 404 fallback posters; add noscript injector to lightdom for search indexing (disable via `disablenoscript` attribute in v1.7.1).
+- _new in v1.8_: Adds support for styling the playButton.
 
 ## Install via package manager
 
@@ -209,6 +210,16 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
   lite-youtube {
     /* No Shadow */
     --lite-youtube-frame-shadow-visible: no;
+  }
+</style>
+<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+```
+
+## Customize the play button
+```html
+<style>
+  lite-youtube::part(playButton) {
+    /* You custom style */
   }
 </style>
 <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
