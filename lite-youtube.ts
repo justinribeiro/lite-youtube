@@ -299,18 +299,15 @@ export class LiteYTEmbed extends HTMLElement {
 
   private generateIframe(isIntersectionObserver = false): string {
     let autoplay = isIntersectionObserver ? 0 : 1;
+    // autopause needs the postMessage() in the iframe, so you have to enable
+    // the jsapi
+    let autoPause = this.autoPause ? '&enablejsapi=1' : '';
     const wantsNoCookie = this.noCookie ? '-nocookie' : '';
     let embedTarget;
     if (this.playlistId) {
       embedTarget = `?listType=playlist&list=${this.playlistId}&`;
     } else {
       embedTarget = `${this.videoId}?`;
-    }
-
-    // autopause needs the postMessage() in the iframe, so you have to enable
-    // the jsapi
-    if (this.autoPause) {
-      this.params = `enablejsapi=1`;
     }
 
     // Oh wait, you're a YouTube short, so let's try to make you more workable
@@ -322,7 +319,7 @@ export class LiteYTEmbed extends HTMLElement {
     return `
 <iframe credentialless frameborder="0" title="${this.videoTitle}"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
-  src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}&${this.params}"
+  src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}${autoPause}&${this.params}"
 ></iframe>`;
   }
 

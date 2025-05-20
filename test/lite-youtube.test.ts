@@ -128,6 +128,27 @@ describe('<lite-youtube>', () => {
     expect(document.head.querySelectorAll('link').length).to.be.equal(7);
   });
 
+  it('autoPause should inject jsapi', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube videoid="guJLfqTFfIw" autoPause></lite-youtube>`,
+    );
+    el.click();
+    expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
+      '<iframe credentialless frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;enablejsapi=1&amp;start=0&amp;null" title="Video"></iframe>',
+    );
+  });
+
+  it('autoPause should not override params', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoid="guJLfqTFfIw"
+        params="loop=1"
+        autoPause
+      ></lite-youtube>`,
+    );
+    expect(el.params).to.equal('start=0&loop=1');
+  });
+
   it('nocookie attr should change iframe url target', async () => {
     const el = await fixture<LiteYTEmbed>(
       html`<lite-youtube videoid="guJLfqTFfIw" nocookie></lite-youtube>`,
