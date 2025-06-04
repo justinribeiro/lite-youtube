@@ -254,24 +254,26 @@ Use any [YouTube Embedded Players and Player Parameters](https://developers.goog
 The web component allows certain attributes to be give a little additional
 flexibility.
 
-| Name           | Description                                                      | Default |
-| -------------- | ---------------------------------------------------------------- | ------- |
-| `videoid`      | The YouTube videoid                                              | ``      |
-| `playlistid`   | The YouTube playlistid; requires a videoid for thumbnail         | ``      |
-| `videotitle`   | The title of the video                                           | `Video` |
-| `videoplay`    | The title of the play button (for translation)                   | `Play`  |
-| `videoStartAt` | Set the point at which the video should start, in seconds        | `0`     |
-| `posterquality`| Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault) | `hqdefault`  |
-| `posterloading`| Set img lazy load attr `loading` for poster image | `lazy`  |
-| `nocookie`     | Use youtube-nocookie.com as iframe embed uri | `false` |
-| `autoload`     | Use Intersection Observer to load iframe when scrolled into view | `false` |
-| `short`     | Show 9:16 YouTube Shorts-style interaction on mobile devices | `false` |
-| `params`       | Set YouTube query parameters                                     | ``      |
+| Name              | Description                                                                   | Default     |
+|-------------------|-------------------------------------------------------------------------------|-------------|
+| `videoid`         | The YouTube videoid                                                           | ``          |
+| `playlistid`      | The YouTube playlistid; requires a videoid for thumbnail                      | ``          |
+| `videotitle`      | The title of the video                                                        | `Video`     |
+| `videoplay`       | The title of the play button (for translation)                                | `Play`      |
+| `videoStartAt`    | Set the point at which the video should start, in seconds                     | `0`         |
+| `posterquality`   | Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault) | `hqdefault` |
+| `posterloading`   | Set img lazy load attr `loading` for poster image                             | `lazy`      |
+| `nocookie`        | Use youtube-nocookie.com as iframe embed uri                                  | `false`     |
+| `autoload`        | Use Intersection Observer to load iframe when scrolled into view              | `false`     |
+| `autopause`       | Use video auto-pausing when scrolled out of view                              | `false`     |
+| `short`           | Show 9:16 YouTube Shorts-style interaction on mobile devices                  | `false`     |
+| `disablenoscript` | Disables `noscript` injector added to lightdom for search indexing            | `false`     |
+| `params`          | Set YouTube query parameters                                                  | ``          |
 
 ## Events
 
 The web component fires events to give the ability understand important lifecycle.
 
-| Event Name     | Description                                                      | Returns |
-| -------------- | ---------------------------------------------------------------- | ------- |
-| `liteYoutubeIframeLoaded` | When the iframe is loaded, allowing us of JS API  | `detail: { videoId: this.videoId }` |
+| Event Name                | Description                                      | Returns                             |
+|---------------------------|--------------------------------------------------|-------------------------------------|
+| `liteYoutubeIframeLoaded` | When the iframe is loaded, allowing us of JS API | `detail: { videoId: this.videoId }` |
