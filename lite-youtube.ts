@@ -25,6 +25,7 @@ export class LiteYTEmbed extends HTMLElement {
   private domRefPlayButton!: HTMLButtonElement;
   private static isPreconnected = false;
   private isIframeLoaded = false;
+  private isPlaylistThumbnailLoaded = false;
 
   constructor() {
     super();
@@ -276,6 +277,11 @@ export class LiteYTEmbed extends HTMLElement {
     newVal: unknown,
   ): void {
     if (oldVal !== newVal) {
+      // Reset playlist thumbnail flag if playlistid changes to a different non-null value
+      if (name === 'playlistid' && oldVal !== null && oldVal !== newVal) {
+        this.isPlaylistThumbnailLoaded = false;
+      }
+
       this.setupComponent();
 
       // if we have a previous iframe, remove it and the activated class
@@ -372,6 +378,11 @@ export class LiteYTEmbed extends HTMLElement {
    * Load playlist thumbnail using YouTube oEmbed API
    */
   private async loadPlaylistThumbnail(): Promise<void> {
+    if (this.isPlaylistThumbnailLoaded) {
+      return;
+    }
+    this.isPlaylistThumbnailLoaded = true;
+
     try {
       const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/playlist?list=${this.playlistId}&format=json`;
       const response = await fetch(oEmbedUrl);
