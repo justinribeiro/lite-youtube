@@ -11,6 +11,12 @@ const baseTemplate = html`<lite-youtube
   videoid="guJLfqTFfIw"
 ></lite-youtube>`;
 
+const videoTemplate = html`<video
+  lite-youtube
+  videotitle="Test Me"
+  videoid="guJLfqTFfIw"
+></video>`;
+
 const aspectRatioTemplate = html`<lite-youtube
   style="--lite-youtube-aspect-ratio: 2 / 3;"
   videoTitle="Test Me"
@@ -296,5 +302,92 @@ describe('<lite-youtube>', () => {
   it('is valid A11y via aXe', async () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     await expect(el).shadowDom.to.be.accessible();
+  });
+});
+
+describe('<video lite-youtube>', () => {
+  afterEach(() => {
+    fixtureCleanup();
+  });
+
+  it('video[lite-youtube] gets converted to lite-youtube element', async () => {
+    const container = await fixture<HTMLDivElement>(
+      html`<div>${videoTemplate}</div>`,
+    );
+    
+    // Wait for the conversion to happen
+    await aTimeout(100);
+    
+    const liteYT = container.querySelector('lite-youtube');
+    expect(liteYT).to.exist;
+    expect(liteYT?.getAttribute('videoid')).to.equal('guJLfqTFfIw');
+    expect(liteYT?.getAttribute('videotitle')).to.equal('Test Me');
+  });
+
+  it('video[lite-youtube] attr sets the videoid', async () => {
+    const container = await fixture<HTMLDivElement>(
+      html`<div>${videoTemplate}</div>`,
+    );
+    
+    await aTimeout(100);
+    
+    const el = container.querySelector('lite-youtube') as LiteYTEmbed;
+    expect(el.videoId).to.equal('guJLfqTFfIw');
+  });
+
+  it('video[lite-youtube] clicking button should load iframe', async () => {
+    const container = await fixture<HTMLDivElement>(
+      html`<div>${videoTemplate}</div>`,
+    );
+    
+    await aTimeout(100);
+    
+    const el = container.querySelector('lite-youtube') as LiteYTEmbed;
+    expect(el.shadowRoot.querySelector('iframe')).to.be.null;
+    el.click();
+    expect(el.shadowRoot.querySelector('iframe')).dom.to.equal(
+      '<iframe credentialless frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="" src="https://www.youtube.com/embed/guJLfqTFfIw?autoplay=1&amp;start=0&amp;null" title="Test Me"></iframe>',
+    );
+  });
+
+  it('video[lite-youtube] with all attributes works correctly', async () => {
+    const container = await fixture<HTMLDivElement>(
+      html`<div>
+        <video
+          lite-youtube
+          videoid="guJLfqTFfIw"
+          videotitle="Full Test"
+          videoplay="Watch"
+          posterquality="maxresdefault"
+          nocookie
+        ></video>
+      </div>`,
+    );
+    
+    await aTimeout(100);
+    
+    const el = container.querySelector('lite-youtube') as LiteYTEmbed;
+    expect(el.videoId).to.equal('guJLfqTFfIw');
+    expect(el.videoTitle).to.equal('Full Test');
+    expect(el.videoPlay).to.equal('Watch');
+    expect(el.posterQuality).to.equal('maxresdefault');
+    expect(el.noCookie).to.be.true;
+  });
+
+  it('video[lite-youtube] with child elements preserves them', async () => {
+    const container = await fixture<HTMLDivElement>(
+      html`<div>
+        <video lite-youtube videoid="guJLfqTFfIw">
+          <img slot="image" src="test.jpg" />
+        </video>
+      </div>`,
+    );
+    
+    await aTimeout(100);
+    
+    const el = container.querySelector('lite-youtube') as LiteYTEmbed;
+    const slottedImg = el.querySelector('img[slot="image"]');
+    expect(slottedImg).to.exist;
+    expect(slottedImg?.getAttribute('src')).to.equal('test.jpg');
   });
 });

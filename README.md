@@ -25,6 +25,7 @@
 - _new in v1.6_: Adds `autoPause` for pausing videos scrolled off screen; adds `--lite-youtube-aspect-ratio` CSS custom property create custom aspect ratio videos; adds `--lite-youtube-frame-shadow-visible` CSS custom property to disable frame shadow (flat look); adds a named slot `image` that allows for setting custom poster image; adds `credentialless` for COEP
 - _new in v1.7_: Adds support for 404 fallback posters; add noscript injector to lightdom for search indexing (disable via `disablenoscript` attribute in v1.7.1).
 - _new in v1.8_: Adds support for styling the play button via `::part` (thank you [@Lukinoh](https://github.com/Lukinoh)!).
+- Adds support for standard `<video>` tag with `lite-youtube` attribute for compatibility with platforms that filter custom HTML tags (like Shopify).
 
 ## Install via package manager
 
@@ -55,9 +56,21 @@ If you want the paste-and-go version, you can simply load it via CDN:
 
 ## Basic Usage
 
+### Using Custom Element (Traditional)
+
 ```html
 <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
 ```
+
+### Using Standard Video Tag (New in v2.0)
+
+For compatibility with platforms that filter custom HTML tags (like Shopify), you can now use the standard `<video>` tag with a `lite-youtube` attribute:
+
+```html
+<video lite-youtube videoid="guJLfqTFfIw"></video>
+```
+
+Both methods support all the same attributes and functionality. The `<video lite-youtube>` syntax will automatically be converted to a `<lite-youtube>` element when the script loads.
 
 ## Basic Usage with Fallback Link
 
@@ -68,10 +81,20 @@ A fallback appears in any of the following circumstances:
 1. When JS fails or the lite-youtube script is not loaded/executed
 1. When the browser doesn't support web components
 
+### With Custom Element
+
 ```html
 <lite-youtube videoid="guJLfqTFfIw">
   <a class="lite-youtube-fallback" href="https://www.youtube.com/watch?v=guJLfqTFfIw">Watch on YouTube: "Sample output of devtools-to-video cli tool"</a>
 </lite-youtube>
+```
+
+### With Video Tag
+
+```html
+<video lite-youtube videoid="guJLfqTFfIw">
+  <a class="lite-youtube-fallback" href="https://www.youtube.com/watch?v=guJLfqTFfIw">Watch on YouTube: "Sample output of devtools-to-video cli tool"</a>
+</video>
 ```
 
 Example CSS:
@@ -112,6 +135,8 @@ Example CSS:
 
 Setting the YouTube playlistid allows the playlist interface to load on interaction. Note, this still requires a videoid for to load a placeholder thumbnail as YouTube does not return a thumbnail for playlists in the API.
 
+### Custom Element
+
 ```html
 <lite-youtube
   videoid="VLrYOji75Vc"
@@ -119,7 +144,19 @@ Setting the YouTube playlistid allows the playlist interface to load on interact
 ></lite-youtube>
 ```
 
+### Video Tag
+
+```html
+<video
+  lite-youtube
+  videoid="VLrYOji75Vc"
+  playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9"
+></video>
+```
+
 ## Add Video Title
+
+### Custom Element
 
 ```html
 <lite-youtube
@@ -128,7 +165,19 @@ Setting the YouTube playlistid allows the playlist interface to load on interact
 ></lite-youtube>
 ```
 
-## Update interface for Locale</h3>
+### Video Tag
+
+```html
+<video
+  lite-youtube
+  videotitle="This is a video title"
+  videoid="guJLfqTFfIw"
+></video>
+```
+
+## Update interface for Locale
+
+### Custom Element
 
 ```html
 <lite-youtube
@@ -137,6 +186,18 @@ Setting the YouTube playlistid allows the playlist interface to load on interact
   videoid="guJLfqTFfIw"
 >
 </lite-youtube>
+```
+
+### Video Tag
+
+```html
+<video
+  lite-youtube
+  videoplay="Mirar"
+  videotitle="Mis hijos se burlan de mi español"
+  videoid="guJLfqTFfIw"
+>
+</video>
 ```
 
 ## Style It
@@ -152,6 +213,8 @@ Height and Width are responsive in the component.
 </style>
 <div class="styleIt">
   <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+  <!-- OR -->
+  <video lite-youtube videoid="guJLfqTFfIw"></video>
 </div>
 ```
 
@@ -161,6 +224,8 @@ See [the example video](https://www.youtube.com/watch?v=aw7CRQTuRfo) of how this
 
 ```html
 <lite-youtube videoid="vMImN9gghao" short></lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="vMImN9gghao" short></video>
 ```
 
 ## AutoLoad with IntersectionObserver
@@ -169,6 +234,8 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 
 ```html
 <lite-youtube videoid="guJLfqTFfIw" autoload> </lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="guJLfqTFfIw" autoload></video>
 ```
 
 ## Set a video start time
@@ -176,6 +243,8 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 ```html
 <!-- Start at 5 seconds -->
 <lite-youtube videoid="guJLfqTFfIw" videoStartAt="5"></lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="guJLfqTFfIw" videoStartAt="5"></video>
 ```
 
 ## Fine tune the poster quality for a video
@@ -185,6 +254,12 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
   videoid="guJLfqTFfIw"
   posterquality="maxresdefault"
 ></lite-youtube>
+<!-- OR -->
+<video
+  lite-youtube
+  videoid="guJLfqTFfIw"
+  posterquality="maxresdefault"
+></video>
 ```
 
 ## Use the named slot to set a custom poster image
@@ -192,6 +267,10 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 <lite-youtube videoid="guJLfqTFfIw">
   <img slot="image" src="my-poster-override.jpg">
 </lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="guJLfqTFfIw">
+  <img slot="image" src="my-poster-override.jpg">
+</video>
 ```
 
 ## Set custom aspect ratio
@@ -202,6 +281,8 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
   }
 </style>
 <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="guJLfqTFfIw"></video>
 ```
 
 ## Disable the frame shadow (flat look)
@@ -213,6 +294,8 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
   }
 </style>
 <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="guJLfqTFfIw"></video>
 ```
 
 ## Customize the play button
@@ -223,18 +306,24 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
   }
 </style>
 <lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="guJLfqTFfIw"></video>
 ```
 
 ## Auto-Pause video when scrolled out of view
 Note: the custom poster image will load with this set, but will then disappear without any user interaction because of the intersection observer starting.
 ```html
  <lite-youtube videoid="VLrYOji75Vc" autopause></lite-youtube>
+ <!-- OR -->
+ <video lite-youtube videoid="VLrYOji75Vc" autopause></video>
 ```
 
 ## NoScript disable
 As of v1.7.0, we inject into the lightdom a noscript for SEO help. This can conflict with server side rendered noscript injects. To disable, simply pass `disablenoscript` to the component:
 ```html
  <lite-youtube videoid="VLrYOji75Vc" disablenoscript></lite-youtube>
+ <!-- OR -->
+ <video lite-youtube videoid="VLrYOji75Vc" disablenoscript></video>
 ```
 
 ## YouTube QueryParams
@@ -246,6 +335,9 @@ Use any [YouTube Embedded Players and Player Parameters](https://developers.goog
 ```html
 <lite-youtube videoid="guJLfqTFfIw" params="controls=0&enablejsapi=1">
 </lite-youtube>
+<!-- OR -->
+<video lite-youtube videoid="guJLfqTFfIw" params="controls=0&enablejsapi=1">
+</video>
 ```
 
 
@@ -277,3 +369,19 @@ The web component fires events to give the ability understand important lifecycl
 | Event Name                | Description                                      | Returns                             |
 |---------------------------|--------------------------------------------------|-------------------------------------|
 | `liteYoutubeIframeLoaded` | When the iframe is loaded, allowing us of JS API | `detail: { videoId: this.videoId }` |
+
+## Platform Compatibility
+
+### Shopify and Other Restrictive Platforms
+
+Many e-commerce and content management platforms filter out custom HTML tags for security reasons. If you're using lite-youtube on such platforms, use the `<video lite-youtube>` syntax instead:
+
+```html
+<!-- This works on Shopify and similar platforms -->
+<video lite-youtube videoid="guJLfqTFfIw"></video>
+
+<!-- This may be filtered out -->
+<lite-youtube videoid="guJLfqTFfIw"></lite-youtube>
+```
+
+The `<video lite-youtube>` tag will be automatically converted to a `<lite-youtube>` element when the script loads, providing full functionality while passing through platform filters.
