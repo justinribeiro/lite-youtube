@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes"
+    />
+    <title>lite-youtube playlist thumbnail test</title>
+    <script type="module" src="../lite-youtube.js"></script>
+    <style>
+      body {
+        max-width: 800px;
+        margin: auto;
+        font-family: Arial, sans-serif;
+      }
+      pre {
+        background-color: #f5f5f5;
+        padding: 1em;
+        overflow-x: auto;
+      }
+      .test-case {
+        margin: 2em 0;
+        border: 1px solid #ddd;
+        padding: 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Playlist Thumbnail Test</h1>
+    
+    <div class="test-case">
+      <h3>Test 1: Playlist only (should load thumbnail via oEmbed)</h3>
+      <pre>&lt;lite-youtube playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9" videotitle="Test Playlist"&gt;&lt;/lite-youtube&gt;</pre>
+      <lite-youtube playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9" videotitle="Test Playlist"></lite-youtube>
+    </div>
+
+    <div class="test-case">
+      <h3>Test 2: Both video and playlist (should use video thumbnail - existing behavior)</h3>
+      <pre>&lt;lite-youtube videoid="guJLfqTFfIw" playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9" videotitle="Video + Playlist"&gt;&lt;/lite-youtube&gt;</pre>
+      <lite-youtube videoid="guJLfqTFfIw" playlistid="PL-G5r6j4GptH5JTveoLTVqpp7w2oc27Q9" videotitle="Video + Playlist"></lite-youtube>
+    </div>
+
+    <div class="test-case">
+      <h3>Test 3: Video only (should use video thumbnail - existing behavior)</h3>
+      <pre>&lt;lite-youtube videoid="guJLfqTFfIw" videotitle="Video Only"&gt;&lt;/lite-youtube&gt;</pre>
+      <lite-youtube videoid="guJLfqTFfIw" videotitle="Video Only"></lite-youtube>
+    </div>
+
+    <script>
+      // Add some debugging to see what's happening
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('Testing playlist thumbnail functionality');
+        
+        // Listen for custom events if they exist
+        document.addEventListener('liteYoutubeIframeLoaded', (e) => {
+          console.log('Iframe loaded:', e.detail);
+        });
+      });
+    </script>
+  </body>
+</html>
+

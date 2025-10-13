@@ -25,6 +25,7 @@ export class LiteYTEmbed extends HTMLElement {
   private domRefPlayButton!: HTMLButtonElement;
   private static isPreconnected = false;
   private isIframeLoaded = false;
+  private isPlaylistThumbnailLoaded = false;
 
   constructor() {
     super();
@@ -276,6 +277,11 @@ export class LiteYTEmbed extends HTMLElement {
     newVal: unknown,
   ): void {
     if (oldVal !== newVal) {
+      // Reset playlist thumbnail flag if playlistid changes to a different non-null value
+      if (name === 'playlistid' && oldVal !== null && oldVal !== newVal) {
+        this.isPlaylistThumbnailLoaded = false;
+      }
+
       this.setupComponent();
 
       // if we have a previous iframe, remove it and the activated class
@@ -352,7 +358,11 @@ export class LiteYTEmbed extends HTMLElement {
    * Setup the placeholder image for the component
    */
   private initImagePlaceholder(): void {
-    this.testPosterImage();
+    if (this.playlistId && !this.videoId) {
+      this.loadPlaylistThumbnail();
+    } else {
+      this.testPosterImage();
+    }
 
     this.domRefImg.fallback.setAttribute(
       'aria-label',
@@ -362,6 +372,58 @@ export class LiteYTEmbed extends HTMLElement {
       'alt',
       `${this.videoPlay}: ${this.videoTitle}`,
     );
+  }
+
+  /**
+   * Load playlist thumbnail using YouTube oEmbed API
+   */
+  private async loadPlaylistThumbnail(): Promise<void> {
+    if (this.isPlaylistThumbnailLoaded) {
+      return;
+    }
+    this.isPlaylistThumbnailLoaded = true;
+
+    try {
+      const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/playlist?list=${this.playlistId}&format=json`;
+      const response = await fetch(oEmbedUrl);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch playlist thumbnail: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.thumbnail_url) {
+        // Extract video ID from thumbnail URL to use with existing image loading logic
+        const thumbnailUrl = data.thumbnail_url;
+        const videoIdMatch = thumbnailUrl.match(/\/vi\/([^\/]+)\//);
+        
+        if (videoIdMatch) {
+          const extractedVideoId = videoIdMatch[1];
+          this.loadThumbnailImages(extractedVideoId);
+        } else {
+          // Fallback: use the direct thumbnail URL
+          this.domRefImg.fallback.src = thumbnailUrl;
+          this.domRefImg.fallback.loading = this.posterLoading;
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to load playlist thumbnail:', error);
+      // Fallback to a default placeholder or empty state
+    }
+  }
+
+  /**
+   * Load thumbnail images for a given video ID
+   */
+  private loadThumbnailImages(videoId: string): void {
+    const posterUrlWebp = `https://i.ytimg.com/vi_webp/${videoId}/${this.posterQuality}.webp`;
+    this.domRefImg.webp.srcset = posterUrlWebp;
+
+    const posterUrlJpeg = `https://i.ytimg.com/vi/${videoId}/${this.posterQuality}.jpg`;
+    this.domRefImg.jpeg.srcset = posterUrlJpeg;
+    this.domRefImg.fallback.src = posterUrlJpeg;
+    this.domRefImg.fallback.loading = this.posterLoading;
   }
 
   /**
@@ -396,15 +458,7 @@ export class LiteYTEmbed extends HTMLElement {
           this.posterQuality = 'hqdefault';
         }
 
-        const posterUrlWebp = `https://i.ytimg.com/vi_webp/${this.videoId}/${this.posterQuality}.webp`;
-        this.domRefImg.webp.srcset = posterUrlWebp;
-
-        const posterUrlJpeg = `https://i.ytimg.com/vi/${this.videoId}/${this.posterQuality}.jpg`;
-        this.domRefImg.fallback.loading = this.posterLoading;
-
-        this.domRefImg.jpeg.srcset = posterUrlJpeg;
-        this.domRefImg.fallback.src = posterUrlJpeg;
-        this.domRefImg.fallback.loading = this.posterLoading;
+        this.loadThumbnailImages(this.videoId);
       };
     }, 100);
   }
