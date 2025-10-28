@@ -32,17 +32,29 @@
     </style>
   </head>
   <body>
+    <h2>Add img to slot</h2>
     <pre>
-      <lite-youtube
-        videoid="guJLfqTFfIw" posterquality="maxresdefault"  disablenoscript
-      >
-        <img slot="image" src="https://storage.googleapis.com/jdr-public-imgs/pages/page-4-test.jpg">
-      </lite-youtube>
+      &lt;lite-youtube
+        videoid=&quot;guJLfqTFfIw&quot; posterquality=&quot;maxresdefault&quot;  disablenoscript
+      &gt;
+        &lt;img slot=&quot;image&quot; src=&quot;https://storage.googleapis.com/jdr-public-imgs/pages/page-4-test.jpg&quot;&gt;
+      &lt;/lite-youtube&gt;
     </pre>
     <lite-youtube
       videoid="guJLfqTFfIw" posterquality="maxresdefault"  disablenoscript
     >
       <img slot="image" src="https://storage.googleapis.com/jdr-public-imgs/pages/page-4-test.jpg">
+    </lite-youtube>
+
+    <h2>With width or height defined on image slot</h2>
+    <pre>
+    &lt;lite-youtube videoid=&quot;guJLfqTFfIw&quot; style=&quot;width: 600px;&quot;&gt;
+      &lt;img slot=&quot;image&quot; src=&quot;https://storage.googleapis.com/jdr-public-imgs/pages/page-4-test.jpg&quot; width=&quot;1600&quot; height=&quot;900&quot;&gt;
+    &lt;/lite-youtube&gt;
+    </pre>
+
+    <lite-youtube videoid="guJLfqTFfIw" style="width: 600px;">
+      <img slot="image" src="https://storage.googleapis.com/jdr-public-imgs/pages/page-4-test.jpg" width="1600" height="900">
     </lite-youtube>
 
   </body>

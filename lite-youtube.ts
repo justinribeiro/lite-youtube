@@ -166,6 +166,7 @@ export class LiteYTEmbed extends HTMLElement {
         #fallbackPlaceholder, slot[name=image]::slotted(*) {
           object-fit: cover;
           width: 100%;
+          height: 100%;
         }
 
         @container style(--frame-shadow-visible: yes) {
@@ -387,18 +388,18 @@ export class LiteYTEmbed extends HTMLElement {
     try {
       const oEmbedUrl = `https://www.youtube.com/oembed?url=https://www.youtube.com/playlist?list=${this.playlistId}&format=json`;
       const response = await fetch(oEmbedUrl);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch playlist thumbnail: ${response.status}`);
       }
-      
+
       const data = await response.json();
-      
+
       if (data.thumbnail_url) {
         // Extract video ID from thumbnail URL to use with existing image loading logic
         const thumbnailUrl = data.thumbnail_url;
         const videoIdMatch = thumbnailUrl.match(/\/vi\/([^\/]+)\//);
-        
+
         if (videoIdMatch) {
           const extractedVideoId = videoIdMatch[1];
           this.loadThumbnailImages(extractedVideoId);
