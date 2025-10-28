@@ -604,12 +604,93 @@ export class LiteYTEmbed extends HTMLElement {
     window.liteYouTubeIsPreconnected = true;
   }
 }
-// Register custom element
+
+// Register custom element for lite-youtube tag
 customElements.define('lite-youtube', LiteYTEmbed);
+
+// Also register for video[lite-youtube] elements
+class LiteYTVideo extends LiteYTEmbed {
+  constructor() {
+    super();
+  }
+}
+
+// Use customElements.define with 'is' option to extend built-in video element
+// Note: This approach creates a custom element that extends HTMLVideoElement
+try {
+  customElements.define('lite-yt-video', LiteYTVideo, { extends: 'video' });
+} catch (e) {
+  // Fallback for browsers that don't support extending built-in elements
+  console.warn('lite-youtube: Browser does not support extending built-in elements');
+}
+
+// Initialize video[lite-youtube] elements on page load
+if (typeof document !== 'undefined') {
+  const initLiteYouTubeVideos = () => {
+    const videos = document.querySelectorAll('video[lite-youtube]');
+    videos.forEach((video) => {
+      // Skip if already initialized
+      if (video.hasAttribute('data-lite-youtube-initialized')) {
+        return;
+      }
+
+      // Create a lite-youtube element
+      const liteYT = document.createElement('lite-youtube') as LiteYTEmbed;
+      
+      // Copy all attributes from video to lite-youtube
+      Array.from(video.attributes).forEach((attr) => {
+        if (attr.name !== 'lite-youtube' && attr.name !== 'is') {
+          liteYT.setAttribute(attr.name, attr.value);
+        }
+      });
+
+      // Copy any child elements (like img slot)
+      while (video.firstChild) {
+        liteYT.appendChild(video.firstChild);
+      }
+
+      // Replace video with lite-youtube
+      video.parentNode?.replaceChild(liteYT, video);
+    });
+  };
+
+  // Run on DOMContentLoaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initLiteYouTubeVideos);
+  } else {
+    initLiteYouTubeVideos();
+  }
+
+  // Also observe for dynamically added video[lite-youtube] elements
+  if (typeof MutationObserver !== 'undefined') {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node instanceof HTMLElement) {
+            if (node.tagName === 'VIDEO' && node.hasAttribute('lite-youtube')) {
+              initLiteYouTubeVideos();
+            }
+            // Check descendants
+            const videos = node.querySelectorAll?.('video[lite-youtube]');
+            if (videos && videos.length > 0) {
+              initLiteYouTubeVideos();
+            }
+          }
+        });
+      });
+    });
+
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  }
+}
 
 declare global {
   interface HTMLElementTagNameMap {
     'lite-youtube': LiteYTEmbed;
+    'lite-yt-video': LiteYTVideo;
   }
   interface Window {
     liteYouTubeNonce: string;
