@@ -324,6 +324,7 @@ export class LiteYTEmbed extends HTMLElement {
 
     return `
 <iframe credentialless frameborder="0" title="${this.videoTitle}"
+  referrerpolicy="strict-origin-when-cross-origin"
   allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
   src="https://www.youtube${wantsNoCookie}.com/embed/${embedTarget}autoplay=${autoplay}${autoPause}&${this.params}"
 ></iframe>`;
