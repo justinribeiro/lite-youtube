@@ -64,7 +64,7 @@ If you want the paste-and-go version, you can simply load it via CDN:
 
 A fallback appears in any of the following circumstances:
 
-1. Before the compontent is initialized
+1. Before the component is initialized
 1. When JS is disabled (like `<noscript>`)
 1. When JS fails or the lite-youtube script is not loaded/executed
 1. When the browser doesn't support web components
