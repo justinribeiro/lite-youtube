@@ -297,4 +297,27 @@ describe('<lite-youtube>', () => {
     const el = await fixture<LiteYTEmbed>(baseTemplate);
     await expect(el).shadowDom.to.be.accessible();
   });
+
+  it('shows video title before iframe loads', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoTitle="Test me"
+        videoid="guJLfqTFfIw"
+        showTitleBeforeLoad
+      ></lite-youtube>`,
+    );
+    await elementUpdated(el);
+
+    const frameEl = el.shadowRoot.querySelector('#frame');
+
+    if (!frameEl) return;
+
+    const beforeStyle = window.getComputedStyle(frameEl, '::before');
+
+    expect(beforeStyle.content).to.equal('"Test me"');
+
+    el.click();
+
+    expect(beforeStyle.content).to.equal('""');
+  });
 });

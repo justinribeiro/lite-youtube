@@ -51,7 +51,10 @@ import '@justinribeiro/lite-youtube';
 If you want the paste-and-go version, you can simply load it via CDN:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1/lite-youtube.min.js"></script>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1/lite-youtube.min.js"
+></script>
 ```
 
 ## Basic Usage
@@ -71,7 +74,12 @@ A fallback appears in any of the following circumstances:
 
 ```html
 <lite-youtube videoid="guJLfqTFfIw">
-  <a class="lite-youtube-fallback" href="https://www.youtube.com/watch?v=guJLfqTFfIw">Watch on YouTube: "Sample output of devtools-to-video cli tool"</a>
+  <a
+    class="lite-youtube-fallback"
+    href="https://www.youtube.com/watch?v=guJLfqTFfIw"
+  >
+    Watch on YouTube: "Sample output of devtools-to-video cli tool"
+  </a>
 </lite-youtube>
 ```
 
@@ -79,33 +87,33 @@ Example CSS:
 
 ```css
 .lite-youtube-fallback {
-	aspect-ratio: 16 / 9; /* matches YouTube player */
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	gap: 1em;
-	padding: 1em;
-	background-color: #000;
-	color: #fff;
-	text-decoration: none;
+  aspect-ratio: 16 / 9; /* matches YouTube player */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1em;
+  background-color: #000;
+  color: #fff;
+  text-decoration: none;
 }
 
 /* right-facing triangle "Play" icon */
 .lite-youtube-fallback::before {
-	display: block;
-	content: '';
-	border: solid transparent;
-	border-width: 2em 0 2em 3em;
-	border-left-color: red;
+  display: block;
+  content: '';
+  border: solid transparent;
+  border-width: 2em 0 2em 3em;
+  border-left-color: red;
 }
 
 .lite-youtube-fallback:hover::before {
-	border-left-color: #fff;
+  border-left-color: #fff;
 }
 
 .lite-youtube-fallback:focus {
-	outline: 2px solid red;
+  outline: 2px solid red;
 }
 ```
 
@@ -126,6 +134,16 @@ Setting the YouTube playlistid allows the playlist interface to load on interact
 <lite-youtube
   videotitle="This is a video title"
   videoid="guJLfqTFfIw"
+></lite-youtube>
+```
+
+## Show video title before iframe loads
+
+```html
+<lite-youtube
+  videotitle="This is a video title"
+  videoid="guJLfqTFfIw"
+  showTitleBeforeLoad
 ></lite-youtube>
 ```
 
@@ -189,13 +207,15 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 ```
 
 ## Use the named slot to set a custom poster image
+
 ```html
 <lite-youtube videoid="guJLfqTFfIw">
-  <img slot="image" src="my-poster-override.jpg">
+  <img slot="image" src="my-poster-override.jpg" />
 </lite-youtube>
 ```
 
 ## Set custom aspect ratio
+
 ```html
 <style>
   lite-youtube {
@@ -206,6 +226,7 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 ```
 
 ## Disable the frame shadow (flat look)
+
 ```html
 <style>
   lite-youtube {
@@ -217,6 +238,7 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 ```
 
 ## Customize the play button
+
 ```html
 <style>
   lite-youtube::part(playButton) {
@@ -227,15 +249,19 @@ Uses Intersection Observer if available to automatically load the YouTube iframe
 ```
 
 ## Auto-Pause video when scrolled out of view
+
 Note: the custom poster image will load with this set, but will then disappear without any user interaction because of the intersection observer starting.
+
 ```html
- <lite-youtube videoid="VLrYOji75Vc" autopause></lite-youtube>
+<lite-youtube videoid="VLrYOji75Vc" autopause></lite-youtube>
 ```
 
 ## NoScript disable
+
 As of v1.7.0, we inject into the lightdom a noscript for SEO help. This can conflict with server side rendered noscript injects. To disable, simply pass `disablenoscript` to the component:
+
 ```html
- <lite-youtube videoid="VLrYOji75Vc" disablenoscript></lite-youtube>
+<lite-youtube videoid="VLrYOji75Vc" disablenoscript></lite-youtube>
 ```
 
 ## YouTube QueryParams
@@ -249,32 +275,32 @@ Use any [YouTube Embedded Players and Player Parameters](https://developers.goog
 </lite-youtube>
 ```
 
-
 ## Attributes
 
 The web component allows certain attributes to be give a little additional
 flexibility.
 
-| Name              | Description                                                                   | Default     |
-|-------------------|-------------------------------------------------------------------------------|-------------|
-| `videoid`         | The YouTube videoid                                                           | ``          |
-| `playlistid`      | The YouTube playlistid; requires a videoid for thumbnail                      | ``          |
-| `videotitle`      | The title of the video                                                        | `Video`     |
-| `videoplay`       | The title of the play button (for translation)                                | `Play`      |
-| `videoStartAt`    | Set the point at which the video should start, in seconds                     | `0`         |
-| `posterquality`   | Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault) | `hqdefault` |
-| `posterloading`   | Set img lazy load attr `loading` for poster image                             | `lazy`      |
-| `nocookie`        | Use youtube-nocookie.com as iframe embed uri                                  | `false`     |
-| `autoload`        | Use Intersection Observer to load iframe when scrolled into view              | `false`     |
-| `autopause`       | Use video auto-pausing when scrolled out of view                              | `false`     |
-| `short`           | Show 9:16 YouTube Shorts-style interaction on mobile devices                  | `false`     |
-| `disablenoscript` | Disables `noscript` injector added to lightdom for search indexing            | `false`     |
-| `params`          | Set YouTube query parameters                                                  | ``          |
+| Name                  | Description                                                                   | Default     |
+| --------------------- | ----------------------------------------------------------------------------- | ----------- |
+| `videoid`             | The YouTube videoid                                                           | ``          |
+| `playlistid`          | The YouTube playlistid; requires a videoid for thumbnail                      | ``          |
+| `videotitle`          | The title of the video                                                        | `Video`     |
+| `showTitleBeforeLoad` | Show the `[videotitle]` before the iframe loads                               | `false`     |
+| `videoplay`           | The title of the play button (for translation)                                | `Play`      |
+| `videoStartAt`        | Set the point at which the video should start, in seconds                     | `0`         |
+| `posterquality`       | Set thumbnail poster quality (maxresdefault, sddefault, mqdefault, hqdefault) | `hqdefault` |
+| `posterloading`       | Set img lazy load attr `loading` for poster image                             | `lazy`      |
+| `nocookie`            | Use youtube-nocookie.com as iframe embed uri                                  | `false`     |
+| `autoload`            | Use Intersection Observer to load iframe when scrolled into view              | `false`     |
+| `autopause`           | Use video auto-pausing when scrolled out of view                              | `false`     |
+| `short`               | Show 9:16 YouTube Shorts-style interaction on mobile devices                  | `false`     |
+| `disablenoscript`     | Disables `noscript` injector added to lightdom for search indexing            | `false`     |
+| `params`              | Set YouTube query parameters                                                  | ``          |
 
 ## Events
 
 The web component fires events to give the ability understand important lifecycle.
 
 | Event Name                | Description                                      | Returns                             |
-|---------------------------|--------------------------------------------------|-------------------------------------|
+| ------------------------- | ------------------------------------------------ | ----------------------------------- |
 | `liteYoutubeIframeLoaded` | When the iframe is loaded, allowing us of JS API | `detail: { videoId: this.videoId }` |

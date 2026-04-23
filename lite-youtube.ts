@@ -123,6 +123,10 @@ export class LiteYTEmbed extends HTMLElement {
     return this.hasAttribute('disablenoscript');
   }
 
+  get showTitleBeforeLoad(): boolean {
+    return this.hasAttribute('showtitlebeforeload');
+  }
+
   /**
    * Define our shadowDOM for the component
    */
@@ -169,17 +173,42 @@ export class LiteYTEmbed extends HTMLElement {
           height: 100%;
         }
 
+        #frame::before {
+          box-sizing: border-box;
+          color: #fff;
+          content: '';
+          display: block;
+          font-family: "YouTube Noto", Roboto, Arial, Helvetica, sans-serif;
+          font-size: 18px;
+          font-weight: 500;
+          line-height: 1.2;
+          position: absolute;
+          top: 0;
+          height: 60px;
+          width: 100%;
+          padding-block: 12px;
+          padding-inline: 16px;
+          z-index: 1;
+          pointer-events: none;
+        }
+
         @container style(--frame-shadow-visible: yes) {
           #frame::before {
-            content: '';
-            display: block;
-            position: absolute;
-            top: 0;
             background-image: linear-gradient(180deg, #111 -20%, transparent 90%);
-            height: 60px;
-            width: 100%;
-            z-index: 1;
           }
+        }
+
+        ${
+          this.showTitleBeforeLoad
+            ? `
+              #frame:not(.activated)::before {
+                content: '${this.videoTitle}';
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              }
+            `
+            : ''
         }
 
         #playButton {
@@ -390,7 +419,9 @@ export class LiteYTEmbed extends HTMLElement {
       const response = await fetch(oEmbedUrl);
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch playlist thumbnail: ${response.status}`);
+        throw new Error(
+          `Failed to fetch playlist thumbnail: ${response.status}`,
+        );
       }
 
       const data = await response.json();
