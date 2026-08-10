@@ -272,7 +272,7 @@ describe('<lite-youtube>', () => {
   });
 
   it('YouTube Short mobile check', async () => {
-    setViewport({ width: 360, height: 640 });
+    await setViewport({ width: 360, height: 640 });
     const el = await fixture<LiteYTEmbed>(
       html`<lite-youtube videoid="guJLfqTFfIw" short></lite-youtube>`,
     );
