@@ -178,9 +178,52 @@ describe('<lite-youtube>', () => {
       '#fallbackPlaceholder',
     );
 
-    const checkStringOne = 'https://i.ytimg.com/vi/guJLfqTFfIw/mqdefault.jpg';
+    const checkStringOne =
+      'https://i.ytimg.com/vi_webp/guJLfqTFfIw/mqdefault.webp';
 
     expect(fallback?.src).to.be.equal(checkStringOne);
+  });
+
+  it('poster renders as webp, not jpeg', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoid="guJLfqTFfIw"
+        posterQuality="hqdefault"
+      ></lite-youtube>`,
+    );
+
+    await elementUpdated(el);
+    await aTimeout(1000);
+
+    const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
+      '#fallbackPlaceholder',
+    );
+
+    expect(fallback?.src).to.be.equal(
+      'https://i.ytimg.com/vi_webp/guJLfqTFfIw/hqdefault.webp',
+    );
+  });
+
+  it('poster falls back to hqdefault jpeg when no webp poster exists', async () => {
+    const el = await fixture<LiteYTEmbed>(
+      html`<lite-youtube
+        videoid="thisVideoDoesNotExist"
+        posterQuality="maxresdefault"
+      ></lite-youtube>`,
+    );
+
+    await elementUpdated(el);
+    await aTimeout(1000);
+
+    const fallback = el.shadowRoot?.querySelector<HTMLImageElement>(
+      '#fallbackPlaceholder',
+    );
+
+    expect(fallback?.src).to.be.equal(
+      'https://i.ytimg.com/vi/thisVideoDoesNotExist/hqdefault.jpg',
+    );
+    // the fallback ladder must not rewrite the author's posterquality attr
+    expect(el.posterQuality).to.be.equal('maxresdefault');
   });
 
   it('posterLoading attr default', async () => {

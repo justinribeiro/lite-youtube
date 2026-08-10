@@ -17,11 +17,7 @@
 export class LiteYTEmbed extends HTMLElement {
   shadowRoot!: ShadowRoot;
   private domRefFrame!: HTMLDivElement;
-  private domRefImg!: {
-    fallback: HTMLImageElement;
-    webp: HTMLSourceElement;
-    jpeg: HTMLSourceElement;
-  };
+  private domRefImg!: HTMLImageElement;
   private domRefPlayButton!: HTMLButtonElement;
   private static isPreconnected = false;
   private isIframeLoaded = false;
@@ -219,22 +215,14 @@ export class LiteYTEmbed extends HTMLElement {
         }
       </style>
       <div id="frame">
-        <picture>
-          <slot name="image">
-            <source id="webpPlaceholder" type="image/webp">
-            <source id="jpegPlaceholder" type="image/jpeg">
-            <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy">
-          </slot>
-        </picture>
+        <slot name="image">
+          <img id="fallbackPlaceholder" referrerpolicy="origin" loading="lazy">
+        </slot>
         <button id="playButton" part="playButton"></button>
       </div>
     `;
     this.domRefFrame = shadowDom.querySelector<HTMLDivElement>('#frame')!;
-    this.domRefImg = {
-      fallback: shadowDom.querySelector('#fallbackPlaceholder')!,
-      webp: shadowDom.querySelector('#webpPlaceholder')!,
-      jpeg: shadowDom.querySelector('#jpegPlaceholder')!,
-    };
+    this.domRefImg = shadowDom.querySelector('#fallbackPlaceholder')!;
     this.domRefPlayButton = shadowDom.querySelector('#playButton')!;
   }
 
@@ -243,8 +231,8 @@ export class LiteYTEmbed extends HTMLElement {
    */
   private setupComponent(): void {
     // If the named slot is not empty, then we save the network requests and
-    // don't fire up the selector; we use assignedNodes() since we're using
-    // default slot elements for the picture
+    // don't fire up the selector; we use assignedNodes() since the built-in
+    // fallback img does not count as an assigned node
     const hasImgSlot: HTMLSlotElement =
       this.shadowRoot.querySelector('slot[name=image]')!;
     if (hasImgSlot.assignedNodes().length === 0) {
@@ -366,14 +354,7 @@ export class LiteYTEmbed extends HTMLElement {
       this.testPosterImage();
     }
 
-    this.domRefImg.fallback.setAttribute(
-      'aria-label',
-      `${this.videoPlay}: ${this.videoTitle}`,
-    );
-    this.domRefImg?.fallback?.setAttribute(
-      'alt',
-      `${this.videoPlay}: ${this.videoTitle}`,
-    );
+    this.domRefImg.alt = `${this.videoPlay}: ${this.videoTitle}`;
   }
 
   /**
@@ -390,7 +371,9 @@ export class LiteYTEmbed extends HTMLElement {
       const response = await fetch(oEmbedUrl);
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch playlist thumbnail: ${response.status}`);
+        throw new Error(
+          `Failed to fetch playlist thumbnail: ${response.status}`,
+        );
       }
 
       const data = await response.json();
@@ -402,11 +385,10 @@ export class LiteYTEmbed extends HTMLElement {
 
         if (videoIdMatch) {
           const extractedVideoId = videoIdMatch[1];
-          this.loadThumbnailImages(extractedVideoId);
+          await this.resolvePoster(extractedVideoId);
         } else {
           // Fallback: use the direct thumbnail URL
-          this.domRefImg.fallback.src = thumbnailUrl;
-          this.domRefImg.fallback.loading = this.posterLoading;
+          this.applyPoster(thumbnailUrl);
         }
       }
     } catch (error) {
@@ -416,53 +398,67 @@ export class LiteYTEmbed extends HTMLElement {
   }
 
   /**
-   * Load thumbnail images for a given video ID
-   */
-  private loadThumbnailImages(videoId: string): void {
-    const posterUrlWebp = `https://i.ytimg.com/vi_webp/${videoId}/${this.posterQuality}.webp`;
-    this.domRefImg.webp.srcset = posterUrlWebp;
-
-    const posterUrlJpeg = `https://i.ytimg.com/vi/${videoId}/${this.posterQuality}.jpg`;
-    this.domRefImg.jpeg.srcset = posterUrlJpeg;
-    this.domRefImg.fallback.src = posterUrlJpeg;
-    this.domRefImg.fallback.loading = this.posterLoading;
-  }
-
-  /**
    * Slightly varied approach for our shadowDOM, but identical lookup approach to
    * paulirish's https://github.com/paulirish/lite-youtube-embed
    *
    * Note, this won't run if the named slot=image is defined
    */
-  private async testPosterImage(): Promise<void> {
-    setTimeout(() => {
-      const webpUrl = `https://i.ytimg.com/vi_webp/${this.videoId}/${this.posterQuality}.webp`;
+  private testPosterImage(): void {
+    setTimeout(() => this.resolvePoster(this.videoId), 100);
+  }
+
+  /**
+   * Probe for the best available poster and apply it, from the requested
+   * quality down to the safest fallback
+   */
+  private async resolvePoster(videoId: string): Promise<void> {
+    const requestedUrl = `https://i.ytimg.com/vi_webp/${videoId}/${this.posterQuality}.webp`;
+    if (await this.hasPoster(requestedUrl)) {
+      this.applyPoster(requestedUrl);
+      return;
+    }
+
+    // Diverge: this differs from Paul's in that I have a specific opinion
+    // about the fallback, given that we allow <slot> overriding and that
+    // having tested this against a lot of different cases, the safest
+    // fallback with respect to a missing poster appears to be the hqdefault
+    // even in cases where the maxresdefault for a JPG (which I find
+    // _doesn't_ actually always exist for the JPG case either as reported
+    // by some folks)
+    if (this.posterQuality !== 'hqdefault') {
+      const fallbackUrl = `https://i.ytimg.com/vi_webp/${videoId}/hqdefault.webp`;
+      if (await this.hasPoster(fallbackUrl)) {
+        this.applyPoster(fallbackUrl);
+        return;
+      }
+    }
+
+    // YouTube has historically been slow to derive the WebP poster for a
+    // freshly uploaded video, so JPEG is the last resort rather than a
+    // parallel <source> that a webp-capable browser would never pick anyway
+    this.applyPoster(`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`);
+  }
+
+  /**
+   * A pretty ugly hack since onerror won't fire on YouTube image 404. This is
+   * (probably) due to Youtube's style of returning data even with a 404 status.
+   * That data is a 120x90 placeholder image, so we have to measure the result.
+   */
+  private hasPoster(url: string): Promise<boolean> {
+    return new Promise(resolve => {
       const img = new Image();
       img.fetchPriority = 'low'; // low priority to reduce network contention
       img.referrerPolicy = 'origin'; // Not 100% sure it's needed, but https://github.com/ampproject/amphtml/pull/3940
-      img.src = webpUrl;
-      img.onload = async e => {
-        const target = e.target as HTMLImageElement;
-        // A pretty ugly hack since onerror won't fire on YouTube image 404.
-        // This is (probably) due to Youtube's style of returning data even with
-        // a 404 status. That data is a 120x90 placeholder image.
-        const noPoster =
-          target?.naturalHeight == 90 && target?.naturalWidth == 120;
+      img.onload = () =>
+        resolve(!(img.naturalHeight === 90 && img.naturalWidth === 120));
+      img.onerror = () => resolve(false);
+      img.src = url;
+    });
+  }
 
-        // Diverge: this differs from Paul's in that I have a specific opinion
-        // about the fallback, given that we allow <slot> overriding and that
-        // having tested this against a lot of different cases, the safest
-        // fallback with respect to a missing poster appears to be the hqdefault
-        // even in cases where the maxresdefault for a JPG (which I find
-        // _doesn't_ actually always exist for the JPG case either as reported
-        // by some folks)
-        if (noPoster) {
-          this.posterQuality = 'hqdefault';
-        }
-
-        this.loadThumbnailImages(this.videoId);
-      };
-    }, 100);
+  private applyPoster(url: string): void {
+    this.domRefImg.src = url;
+    this.domRefImg.loading = this.posterLoading;
   }
 
   /**
