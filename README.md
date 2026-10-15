@@ -75,19 +75,52 @@ A fallback appears in any of the following circumstances:
 </lite-youtube>
 ```
 
+To combine the fallback with a custom poster, place both elements inside the component:
+
+```html
+<lite-youtube videoid="guJLfqTFfIw">
+  <img slot="image" src="my-poster-override.jpg" alt="">
+  <a class="lite-youtube-fallback" href="https://www.youtube.com/watch?v=guJLfqTFfIw">Watch on YouTube: "Sample output of devtools-to-video cli tool"</a>
+</lite-youtube>
+```
+
+The following CSS reserves the player area before the component is defined and places the link over the poster.
+A dark background keeps the link readable on light images; without a poster, it provides a plain background.
+Once the component is defined, its shadow DOM displays the custom poster and play button, and the unslotted fallback link is no longer rendered.
+
 Example CSS:
 
 ```css
+lite-youtube:not(:defined) {
+	display: block;
+	position: relative;
+	aspect-ratio: var(--lite-youtube-aspect-ratio, 16 / 9);
+	background-color: #000;
+}
+
+lite-youtube:not(:defined) > [slot="image"],
+lite-youtube:not(:defined) > .lite-youtube-fallback {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+lite-youtube:not(:defined) > [slot="image"] {
+	object-fit: cover;
+}
+
 .lite-youtube-fallback {
-	aspect-ratio: 16 / 9; /* matches YouTube player */
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
 	gap: 1em;
 	padding: 1em;
-	background-color: #000;
+	background-color: rgba(0, 0, 0, 0.75);
 	color: #fff;
+	z-index: 1;
 	text-decoration: none;
 }
 
